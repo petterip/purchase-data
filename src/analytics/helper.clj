@@ -43,17 +43,3 @@
 
 (defmacro swallow-exceptions [& body]
     (try ~@body (catch Exception e#)))
-
-;; (swallow-exceptions (parse "2012010")) ; nil
-;; (for [x [0 1 2 3 4 5]
-;;       :let [y (* x 3)]
-;;       :when (even? y)]
-;;   y)
-
-;; (def custom-formatter (f/formatter "yyyyMMdd"))
-;; (f/parse custom-formatter "20100311")
-;; (for [x [1 2 3]] (println x))
-;; (doseq [x [1 2 3]] (println x))
-
-; Form an array kind of map
-;; (doall (map #(println %1 %2) (range) [1 2 3]))
