@@ -66,8 +66,16 @@
                              (r/call-ocrsdk filepath)]
                          (if (not (nil? text-file))
                            ;; Read the recognized text file into database
-                           (r/read-text-file text-file email date)
-                           (println "Receipt text recognized and products stored into database."))
+                           (do
+                             (db/store-file!
+                               (assoc params :timestamp (java.util.Date.)
+                                 :email email
+                                 :fname text-file
+                                 :date date
+                                 :store "n/a"
+                                 :type "txt"))
+                             (r/read-text-file text-file email date)
+                             (println "Receipt text recognized and products stored into database.")))
                          )
             (.endsWith (s/lower-case filename) ".txt")
                        ;; Read the recognized text file into database

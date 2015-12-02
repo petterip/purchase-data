@@ -3,9 +3,9 @@
 /classes
 /checkouts
 pom.xml
+all_prods.json
 *.jar
 *.class
 /.lein-*
-profiles.clj
 /.env
 *.log
