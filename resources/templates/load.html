@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row">
+    <div class="span12 load">
+        <p class="ident"><strong>You can upload purchase reports as csv files (e.g. ostotietoraportti.csv), receipts for recognition (.jpg) and
+            text files (.txt) already recognized with OCR. Select whether you want to upload a purchase report or a receipt.</strong></p>
+
+        <div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Upload purchase report</a></li>
+                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Upload receipt</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <form method="POST" action="/" enctype="multipart/form-data">
+                    {% csrf-field %}
+
+                    <p>
+                        Informant email address:
+                        <input class="form-control"
+                               type="text"
+                               name="email"
+                               value="{{email}}" />
+                    </p>
+                    {% if errors.email %}
+                    <div class="alert alert-danger">Please give your email address ({{errors.email|join}})</div>
+                    {% endif %}
+
+                    <div id="date-tab">
+                        <p>
+                            Date of visit in the store:</p>
+                        <div class="input-group date">
+                            <input type="text" class="form-control" name="date" value="{{date}}" />
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                        </div>
+                        {% if errors.date %}
+                        <div class="alert alert-danger">Please give a valid date in form YYYY-MM-DD ({{errors.date|join}})</div>
+                        {% endif %}
+                    </div>
+
+                    <p>
+                        File:
+                        <input name="file" type="file" size="20" />
+                    </p>
+                    {% if errors.file %}
+                    <div class="alert alert-danger">Please include a file</div>
+                    {% endif %}
+
+                    <div id="comment-tab">
+                        <p>
+                            Comments:
+                            <textarea class="form-control"
+                                      rows="4"
+                                      cols="50"
+                                      name="comment">{{comment}}</textarea>
+                        </p>
+                        {% if errors.comment %}
+                        <div class="alert alert-danger">{{errors.comment|join}}</div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit" data-loading-text="Processing..." class="btn btn-primary">Submit file</button>
+                    <!-- <input type="submit" class="btn btn-primary" value="Submit file" /> -->
+                </form>
+
+            </div> <!-- tab-content -->
+        </div>
+    </div>
+</div>
+{% if files %}
+
+<div class="row load">
+    <div class="span12">
+        <p class="ident"><strong>Last uploaded files:</strong></p>
+        <ul class="">
+            {% for item in files %}
+            <li>
+                <p>File {{item.fname}} uploaded on {{item.timestamp|date:"yyyy-MM-dd HH:mm"}}<br/>
+                    <time>ID: {{item.email}}<br/>
+                        {{item.comment}}</time></p>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% endif %}
+
+{% endblock %}

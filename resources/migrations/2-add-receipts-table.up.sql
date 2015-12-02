@@ -1,0 +1,5 @@
+CREATE TABLE receipts
+(id INTEGER PRIMARY KEY,
+ name VARCHAR(256),
+ message VARCHAR(512),
+ timestamp TIMESTAMP);
