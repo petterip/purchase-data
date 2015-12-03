@@ -39,7 +39,7 @@ WHERE type = :type
 -- selects all available files
 SELECT DISTINCT files.*, count(distinct purchases.date) visits, sum(purchases.price), strftime('%d.%m.%Y', min(purchases.date)) start,  strftime('%d.%m.%Y', max(purchases.date)) end FROM purchases
 JOIN files ON files.email = purchases.email
-WHERE price > 0
+WHERE price > 0 AND files.type = "csv"
 GROUP BY purchases.email, fname ORDER BY email, date
 
 -- name:get-purchases

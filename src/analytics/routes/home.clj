@@ -125,6 +125,19 @@
        (assoc params :timestamp (java.util.Date.)))
       (redirect "/"))))
 
+(defn api-get-purchases [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-purchases {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
 ;; About page
 (defn about-page []
   (layout/render "about.html"))
@@ -141,5 +154,10 @@
 
   (GET "/purchases" request (purchases-page request))
   (GET "/items" request (items-page request))
-  (GET "/about" [] (about-page)))
+  (GET "/about" [] (about-page))
+
+  ; API routes
+  (GET "/api/purchases/:id" request (api-get-purchases request))
+  (GET "/api/purchases/" request (api-get-purchases []))
+  )
 
