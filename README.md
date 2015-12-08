@@ -15,7 +15,7 @@ You will need [Leiningen][1] 2.0 or above installed.
 
 ## Demo
 
-Demo version of the application with some sample data is available here at http://ostosdata.oulu.fi:8080/purchases.
+Application demo with some sample data is available at http://ostosdata.oulu.fi:8080/purchases. Feel free to play with it as much as you like.
 
 ## Running
 
