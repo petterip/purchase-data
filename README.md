@@ -35,7 +35,7 @@ The application serves the following API calls:
 * GET /purchases/id <br/>get purchases of a specific user ID
 
 <br/>
-Note: the repository does not contain file 'all_prods.json' which is necessary to for recognizing receipts. Please [contact the author](mailto:petteri.ponsimaa@oulu.fi) for instructions how to get it.
+Note: the repository does not contain file 'all_prods.json' which is necessary for recognizing receipts. Please [contact the author](mailto:petteri.ponsimaa@oulu.fi) for instructions how to get it.
 
 ## License
 
