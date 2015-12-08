@@ -13,6 +13,10 @@ You will need [Leiningen][1] 2.0 or above installed.
 
 [1]: https://github.com/technomancy/leiningen
 
+## Demo
+
+Demo version of the application with some sample data is available here at http://ostosdata.oulu.fi:8080/purchases.
+
 ## Running
 
 First, create the database by runnning:
