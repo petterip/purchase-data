@@ -106,6 +106,11 @@
         entry ((:message response) :entry)]
     entry))
 
+; DELETE THESE
+;(float (* 2.5 (bigdec "3")))
+;(float (read-string "2.5"))
+;(read-text-file "src/results_30.9.txt" "sadf@asdf" "2015-11-22")
+
 (defn read-text-file [text-file email date]
   (with-open [rdr (io/reader text-file)]
     (let [parsed-lines (map clojure.string/trim (line-seq rdr))
@@ -114,7 +119,7 @@
       (println "GOT STORE: " store)
       (db/update-store! {:email email :date date :store store})
 
-      (doseq [line parsed-lines]
+      (doseq [line (take 500 parsed-lines)]
 
         ;(println "Reading line: " line)
         (let [matches (mapv clojure.string/trim (re-find #"(\D+) ([\d\.]+)" (str line)))
@@ -132,10 +137,23 @@
                            name (get closest 1)
                            ean (get closest 2)
                            entry (get-foodie-info ean)
+                           weight (h/to-number (entry :net_weight))
+                           energy (h/to-number (entry :kcal))
+                           carb (h/to-number (entry :carbohydrate))
+                           fiber (h/to-number (entry :fiber))
+                           sugar (h/to-number (entry :sugar))
+                           fat (h/to-number (entry :fat))
+                           fat-saturated (h/to-number (entry :fat-saturated))
+                           prot (h/to-number (entry :protein))
+                           salt (* 2.5 (h/to-number (entry :sodium)))
+                           origin (entry :origin)
+                           type (entry :type)
+                           is-food (not (== 0 energy fat carb))
                            [foodiecat1 foodiecat2] (map :name (take 2 (entry :category_path)))
                            category (get-category foodiecat1 foodiecat2)
                            gpc (h/not-nil (entry :entry_gpc_category))]
-                       (println "Match: " (get closest 2) price ":" category "-" foodiecat1 "/" foodiecat2)           ; [dist name ean]
+                       (print "Match: " (get closest 2) price ":" category "-" foodiecat1 "/" foodiecat2)           ; [dist name ean]
+                       (println " Energy:" energy "Carb:" carb "Fiber:" fiber "Fat:" fat "Prot:" prot "Salt:" salt "Weight:" weight "Type:" is-food)
                        (db/save-item! {:name name
                                        :ean ean
                                        :price price
@@ -146,7 +164,21 @@
                                        :foodiecat1 foodiecat1
                                        :foodiecat2 foodiecat2
                                        :category category
+
                                        :entry (encode entry)
+                                       :weight weight
+                                       :energy energy
+                                       :carb carb
+                                       :fiber fiber
+                                       :sugar sugar
+                                       :fat fat
+                                       :fat_saturated fat-saturated
+                                       :prot prot
+                                       :salt salt
+
+                                       :origin origin
+                                       :type type
+                                       :food is-food
 
                                        :pt_category (entry :pt_category_id)
                                        :gpc_id (gpc :ext_id)

@@ -138,6 +138,66 @@
     )
   )
 
+(defn api-get-purchases-by-date [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        date (:date params)
+        response (db/get-purchases-by-date {:email id :date date})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
+(defn api-get-purchase-totals [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-purchase-totals {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
+(defn api-get-purchase-tops [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-purchase-tops {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
+(defn api-get-purchase-top-counts [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-purchase-top-counts {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
+;; Chart page
+(defn chart-page []
+  (layout/render "chart.html"))
+
+(defn demo-page []
+  (layout/render "demo.html"))
+
 ;; About page
 (defn about-page []
   (layout/render "about.html"))
@@ -154,10 +214,16 @@
 
   (GET "/purchases" request (purchases-page request))
   (GET "/items" request (items-page request))
+  (GET "/chart" [] (chart-page))
+  (GET "/demo" [] (demo-page))
   (GET "/about" [] (about-page))
 
   ; API routes
   (GET "/api/purchases/:id" request (api-get-purchases request))
+  (GET "/api/purchases/:id/totals" request (api-get-purchase-totals request))
+  (GET "/api/purchases/:id/date/:date" request (api-get-purchases-by-date request))
   (GET "/api/purchases/" request (api-get-purchases []))
+  (GET "/api/purchases/:id/top5" request (api-get-purchase-tops request))
+  (GET "/api/purchases/:id/top5-count" request (api-get-purchase-top-counts request))
   )
 

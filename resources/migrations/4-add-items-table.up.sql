@@ -16,4 +16,18 @@ CREATE TABLE items
  pt_category VARCHAR(256),
  entry VARCHAR(256),
 
+ weight REAL,
+ energy REAL,
+ carb REAL,
+ fiber REAL,
+ sugar REAL,
+ fat REAL,
+ fat_saturated REAL,
+ prot REAL,
+ salt REAL,
+
+ origin VARCHAR(256),
+ type VARCHAR(30),
+ food BOOLEAN,
+
  timestamp TIMESTAMP);

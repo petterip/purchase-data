@@ -43,9 +43,51 @@ WHERE price > 0 AND files.type = "csv"
 GROUP BY purchases.email, fname ORDER BY email, date
 
 -- name:get-purchases
--- selects all available items from user email
+-- selects all available purchases based on user email
 SELECT * from purchases
 WHERE email like :email
+
+-- name:get-purchases-for-email
+-- selects purchases by email, counts per visit
+SELECT email, count(DISTINCT date) FROM purchases
+WHERE email = :email GROUP BY email ORDER BY email, date
+
+-- name:get-purchase-totals
+-- selects purchases by email, counts and groups them by date
+SELECT p1.date, p1.count food_count, p1.cost food_cost, p2.count other_count, p2.cost other_cost, (p1.count+p2.count) total_count, round((p1.cost+p2.cost),2) total_cost FROM
+(SELECT date, count(price) count, round(sum(price),2) cost FROM purchases
+WHERE email LIKE :email AND price > 0 AND category IN (SELECT category FROM food_categories)
+GROUP BY date) p1
+JOIN
+(SELECT date, count(price) count, round(sum(price),2) cost FROM purchases
+WHERE email LIKE :email AND price > 0 AND category NOT IN (SELECT category FROM food_categories)
+GROUP BY date) p2
+ON p1.date = p2.date
+
+-- name: get-purchase-tops
+--
+SELECT category, count(*) count, round(sum(price),2) total FROM purchases
+WHERE email LIKE :email
+GROUP BY category
+ORDER BY total desc
+LIMIT 50
+
+-- name: get-purchase-top-counts
+-- 
+SELECT category, count(*) count, round(sum(price),2) total FROM purchases
+WHERE email LIKE :email
+GROUP BY category
+ORDER BY count desc
+LIMIT 50
+
+-- name:get-purchases-by-date
+-- selects purchases by email, counts and groups them by date
+SELECT date, category, price, "food" food FROM purchases
+WHERE email LIKE :email  AND date = :date AND category IN (SELECT category FROM food_categories)
+UNION
+SELECT date, category, price, "other" food FROM purchases
+WHERE email LIKE :email  AND date = :date AND category NOT IN (SELECT category FROM food_categories)
+ORDER BY food
 
 -- name:store-purchase!
 -- creates a new file
@@ -53,15 +95,69 @@ INSERT INTO purchases
 (email, date, time, store, class, category, price, timestamp)
 VALUES (:email, :date, :time, :store, :class, :category, :price, :timestamp)
 
--- name:get-purchases-for-email
--- selects all available files
-SELECT email, count(DISTINCT date) FROM purchases WHERE email = :email GROUP BY email ORDER BY email, date
-
 -- name:save-item!
 -- inserts new product item
 INSERT INTO items
-(name, ean, price, sourcefile, email, "date", store, foodiecat1, foodiecat2, entry, category,    pt_category, gpc_id, gpc_name, timestamp)
-VALUES (:name, :ean, :price, :sourcefile, :email, :date, :store, :foodiecat1, :foodiecat2, :entry, :category,  :pt_category, :gpc_id, :gpc_name, :timestamp)
+(name,
+ ean,
+ price,
+ sourcefile,
+ email,
+ "date",
+ store,
+ foodiecat1,
+ foodiecat2,
+ entry,
+
+ weight,
+ energy,
+ carb,
+ fiber,
+ sugar,
+ fat,
+ fat_saturated,
+ prot,
+ salt,
+
+ origin,
+ type,
+ food,
+
+ category,
+ pt_category,
+ gpc_id,
+ gpc_name,
+ timestamp)
+VALUES (:name,
+        :ean,
+        :price,
+        :sourcefile,
+        :email,
+        :date,
+        :store,
+        :foodiecat1,
+        :foodiecat2,
+        :entry,
+
+        :weight,
+        :energy,
+        :carb,
+        :fiber,
+        :sugar,
+        :fat,
+        :fat_saturated,
+        :prot,
+        :salt,
+
+        :origin,
+        :type,
+        :food,
+
+        :category,
+        :pt_category,
+        :gpc_id,
+        :gpc_name,
+        :timestamp)
 
 -- name:update-item!
 -- inserts new product item

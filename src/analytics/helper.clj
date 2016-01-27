@@ -12,6 +12,13 @@
     {}
     x))
 
+(defn to-number [str]
+  (if (or (nil? str) (= "" str))
+    0
+    (if (number? str)
+      str
+      (read-string str))))
+
 (defn now-str [file]
   (str (f/unparse (f/formatter-local "yyyy-MM-dd-HHmm") (l/local-now) ) "-" file))
 
