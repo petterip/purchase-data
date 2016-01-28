@@ -52,6 +52,11 @@ WHERE email like :email
 SELECT email, count(DISTINCT date) FROM purchases
 WHERE email = :email GROUP BY email ORDER BY email, date
 
+-- name:get-category
+-- selects S Group category based on Foodie categories
+SELECT category FROM food_categories
+WHERE foodiecat1 = :foodiecat1 AND (foodiecat2 = :foodiecat2 OR foodiecat2 = "*")
+
 -- name:get-purchase-totals
 -- selects purchases by email, counts and groups them by date
 SELECT p1.date, p1.count food_count, p1.cost food_cost, p2.count other_count, p2.cost other_cost, (p1.count+p2.count) total_count, round((p1.cost+p2.cost),2) total_cost FROM
@@ -73,7 +78,7 @@ ORDER BY total desc
 LIMIT 50
 
 -- name: get-purchase-top-counts
--- 
+--
 SELECT category, count(*) count, round(sum(price),2) total FROM purchases
 WHERE email LIKE :email
 GROUP BY category

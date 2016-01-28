@@ -142,4 +142,6 @@
 {"category":"VIINIT, SIIDERIT <4,7%","foodiecat1":"JUOMAT","foodiecat2":"VIINIT"},
 {"category":"VILJELLYT SIENET","foodiecat1":"HEDELMÄT JA VIHANNEKSET","foodiecat2":"SIENET"},
 {"category":"VIRVOITUSJUOMAT, VEDET","foodiecat1":"JUOMAT","foodiecat2":"VEDET"},
-{"category":"VÄRIKOSMETIIKKA","foodiecat1":"","foodiecat2":""}]
+{"category":"VÄRIKOSMETIIKKA","foodiecat1":"","foodiecat2":""},
+
+{"category":"EINESVALMISTEET","foodiecat1":"PAKASTEET","foodiecat2":"VALMISRUOKA"}]

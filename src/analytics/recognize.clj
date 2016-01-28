@@ -41,21 +41,26 @@
 (def products-json (parse-stream (clojure.java.io/reader "all_prods.json") true))
 ;; JSON file containing all stores
 (def stores-json (parse-stream (clojure.java.io/reader "stores.json") true))
+
 ;; JSON file for matching purchase report categories with those provided by Foodie
-(def categories-json (parse-stream (clojure.java.io/reader "match_categories.json") true))
+;(def categories-json (parse-stream (clojure.java.io/reader "match_categories.json") true))
+
+;(defn get-category [foodiecat1 foodiecat2]
+;  (let [matches (filter (fn [x]
+;                          (and (= (:foodiecat1 x) foodiecat1)
+;                               (or (= (:foodiecat2 x) "*")
+;                                   (= (:foodiecat2 x) foodiecat2)))) categories-json)
+;        first-match (first matches)]
+;    (if (nil? first-match)
+;      nil
+;      (:category first-match)
+;      )
+;    )
+;  )
 
 (defn get-category [foodiecat1 foodiecat2]
-  (let [matches (filter (fn [x]
-                          (and (= (:foodiecat1 x) foodiecat1)
-                               (or (= (:foodiecat2 x) "*")
-                                   (= (:foodiecat2 x) foodiecat2)))) categories-json)
-        first-match (first matches)]
-    (if (nil? first-match)
-      nil
-      (:category first-match)
-      )
-    )
-  )
+  (let [matches (db/get-category {:foodiecat1 foodiecat1 :foodiecat2 foodiecat2})]
+    (:category (first matches))))
 
 (defn fuzzy-dice [item dist]
   (fn [x] (let [val-dist (ff/dice (x :name) item)]
@@ -104,7 +109,9 @@
         rdr (clojure.java.io/reader url)
         response (parse-stream rdr true)
         entry ((:message response) :entry)]
-    entry))
+    (if (nil? entry)
+      {}
+      entry)))
 
 ; DELETE THESE
 ;(float (* 2.5 (bigdec "3")))
@@ -132,7 +139,7 @@
                (let [close-eans (keep (fuzzy-dice item 0.6) ((:message products-json) :products))]
                  (if (not (empty? close-eans))
                    (do
-                     ;(println "Close-eans: " close-eans)
+                     (println "Close-eans: " (apply max-key first close-eans))
                      (let [closest (apply max-key first close-eans)
                            name (get closest 1)
                            ean (get closest 2)
