@@ -4,7 +4,6 @@
     <div class="files span12">
         <div id="chartdiv"></div>
         <div id="infodiv"><em>Klikkaa kaaviossa päivämäärän kohdalla, saat siten tarkemmat ostostietosi kyseiseltä päivältä.</em></div>
-        <div id="topdiv"></div>
     </div>
 </div>
 {% endblock %}
@@ -131,7 +130,7 @@ alert("Got " + chartData.length);
 return chartData;
 }
     function graphDrawn(e) {
-        if(e.chart.endDate) {
+/*        if(e.chart.endDate) {
             console.log("Redrawn!");
             console.log(e.chart);
             console.log("date " + e.chart.endDate);
@@ -175,6 +174,7 @@ return chartData;
 
         });
       }
+        */
     }
 
     // generate some random data, quite different range

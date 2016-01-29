@@ -98,7 +98,7 @@
             "parseDates": true,
             "axisColor": "#DADADA",
             "minorGridEnabled": true,
-            "guides": [{
+/*            "guides": [{
                 date: "Oct 10, 2015",
                 toDate: "Dec 10, 2015",
                 lineColor: "#CC0000",
@@ -111,7 +111,7 @@
 
                 label: "kuitteihin perustuva data"
             }]
-        },
+*/        },
         "export": {
             "enabled": true,
             "position": "bottom-right"
@@ -133,7 +133,7 @@ return chartData;
             console.log("Redrawn!");
             console.log(e.chart);
             console.log("date " + e.chart.endDate);
-        
+
         $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/top5", function( data ) {
             var items = [];
             var i = 1;
@@ -174,7 +174,7 @@ return chartData;
         });
       }
     }
-    
+
     // generate some random data, quite different range
     function generateChartData() {
         var chartData = [];
