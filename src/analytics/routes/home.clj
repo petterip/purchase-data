@@ -138,11 +138,14 @@
     )
   )
 
-(defn api-get-nutrition [{:keys [params]}]
+(defn api-get-nutrition [{:keys [params]} unit]
   (let [id (if (:id params)
              (:id params)
              "%")
-        response (db/get-nutrition {:email id})
+        response (cond
+                   (= unit "m") (db/get-nutrition-month {:email id})
+                   (= unit "w") (db/get-nutrition-week {:email id})
+                   :else (db/get-nutrition {:email id}))
         status (if (empty? response) 404 200)]
     {:status status
      :headers {"Content-Type" "text/html; charset=utf-8"}
@@ -239,6 +242,8 @@
   (GET "/api/purchases/:id/top5" request (api-get-purchase-tops request))
   (GET "/api/purchases/:id/top5-count" request (api-get-purchase-top-counts request))
 
-  (GET "/api/nutrition/:id" request (api-get-nutrition request))
+  (GET "/api/nutrition/:id" request (api-get-nutrition request "d"))
+  (GET "/api/nutrition/:id/month" request (api-get-nutrition request "m"))
+  (GET "/api/nutrition/:id/week" request (api-get-nutrition request "w"))
   )
 

@@ -42,22 +42,6 @@
 ;; JSON file containing all stores
 (def stores-json (parse-stream (clojure.java.io/reader "stores.json") true))
 
-;; JSON file for matching purchase report categories with those provided by Foodie
-;(def categories-json (parse-stream (clojure.java.io/reader "match_categories.json") true))
-
-;(defn get-category [foodiecat1 foodiecat2]
-;  (let [matches (filter (fn [x]
-;                          (and (= (:foodiecat1 x) foodiecat1)
-;                               (or (= (:foodiecat2 x) "*")
-;                                   (= (:foodiecat2 x) foodiecat2)))) categories-json)
-;        first-match (first matches)]
-;    (if (nil? first-match)
-;      nil
-;      (:category first-match)
-;      )
-;    )
-;  )
-
 (defn get-category [foodiecat1 foodiecat2]
   (let [matches (db/get-category {:foodiecat1 foodiecat1 :foodiecat2 foodiecat2})]
     (:category (first matches))))
@@ -81,7 +65,7 @@
           (if (not (nil? line))
             (do
               (println "Trying to find store:" line)
-              (let [close-stores (keep (fuzzy-store line 0.5) ((:message stores-json) :stores))]
+              (let [close-stores (keep (fuzzy-store line 0.4) ((:message stores-json) :stores))]
                 (if (not (empty? close-stores))
                   (do
                     (println "Close-stores: " close-stores)

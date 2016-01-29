@@ -100,9 +100,41 @@ INSERT INTO purchases
 (email, date, time, store, class, category, price, timestamp)
 VALUES (:email, :date, :time, :store, :class, :category, :price, :timestamp)
 
+-- name:get-nutrition-month
+-- selects and merges nutrion value
+SELECT date, month, avg(fat) fat, avg(energy) energy, avg(carb) carb FROM
+(SELECT date, strftime('%Y-%m', date) month, category FROM purchases WHERE email LIKE "id1%") p
+JOIN
+(SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
+ON i1.category = p.category
+JOIN
+(SELECT category, avg(energy) energy FROM items WHERE email LIKE :email GROUP BY category) i2
+ON i2.category = p.category
+JOIN
+(SELECT category, avg(carb) carb FROM items WHERE email LIKE :email GROUP BY category) i3
+ON i3.category = p.category
+GROUP BY month
+ORDER BY date
+
+-- name:get-nutrition-week
+-- selects and merges nutrion value
+SELECT date, week, avg(fat) fat, avg(energy) energy, avg(carb) carb FROM
+(SELECT date, strftime('%Y/%W', date) week, category FROM purchases WHERE email LIKE "id1%") p
+JOIN
+(SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
+ON i1.category = p.category
+JOIN
+(SELECT category, avg(energy) energy FROM items WHERE email LIKE :email GROUP BY category) i2
+ON i2.category = p.category
+JOIN
+(SELECT category, avg(carb) carb FROM items WHERE email LIKE :email GROUP BY category) i3
+ON i3.category = p.category
+GROUP BY week
+ORDER BY date
+
 -- name:get-nutrition
 -- selects and merges nutrion value
-SELECT date, avg(fat) fat, avg(energy) energy, avg(carb) carb FROM
+SELECT date, round(avg(fat),1) fat, round(avg(energy),1) energy, round(avg(carb),1) carb FROM
 (SELECT date, category FROM purchases WHERE email LIKE :email) p
 JOIN
 (SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
