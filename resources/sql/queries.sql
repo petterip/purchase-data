@@ -75,7 +75,7 @@ SELECT category, count(*) count, round(sum(price),2) total FROM purchases
 WHERE email LIKE :email
 GROUP BY category
 ORDER BY total desc
-LIMIT 50
+LIMIT 15
 
 -- name: get-purchase-top-counts
 --
@@ -83,7 +83,7 @@ SELECT category, count(*) count, round(sum(price),2) total FROM purchases
 WHERE email LIKE :email
 GROUP BY category
 ORDER BY count desc
-LIMIT 50
+LIMIT 15
 
 -- name:get-purchases-by-date
 -- selects purchases by email, counts and groups them by date
@@ -102,51 +102,118 @@ VALUES (:email, :date, :time, :store, :class, :category, :price, :timestamp)
 
 -- name:get-nutrition-month
 -- selects and merges nutrion value
-SELECT date, round(avg(fat),1) fat, round(avg(energy),1) energy, round(avg(carb),1) carb FROM
-(SELECT date, strftime('%Y-%m', date) month, category FROM purchases WHERE email LIKE "id1%") p
+SELECT date, month, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy)/1000,1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
+round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
+(SELECT date, strftime('%m-%Y', date) month, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
+(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy) energy FROM items WHERE email LIKE :email GROUP BY category) i2
+(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb) carb FROM items WHERE email LIKE :email GROUP BY category) i3
+(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
+JOIN
+(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+ON i4.category = p.category
+JOIN
+(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+ON i5.category = p.category
+JOIN
+(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+ON i6.category = p.category
+JOIN
+(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+ON i7.category = p.category
 GROUP BY month
 ORDER BY date
 
 -- name:get-nutrition-week
 -- selects and merges nutrion value
-SELECT date, round(avg(fat),1) fat, round(avg(energy),1) energy, round(avg(carb),1) carb FROM
-(SELECT date, strftime('%Y/%W', date) week, category FROM purchases WHERE email LIKE "id1%") p
+SELECT date, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy)/1000,1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
+round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
+(SELECT date, strftime('%Y-%W', date) week, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
+(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy) energy FROM items WHERE email LIKE :email GROUP BY category) i2
+(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb) carb FROM items WHERE email LIKE :email GROUP BY category) i3
+(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
+JOIN
+(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+ON i4.category = p.category
+JOIN
+(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+ON i5.category = p.category
+JOIN
+(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+ON i6.category = p.category
+JOIN
+(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+ON i7.category = p.category
 GROUP BY week
 ORDER BY date
 
 -- name:get-nutrition
 -- selects and merges nutrion value
-SELECT date, round(avg(fat),1) fat, round(avg(energy),1) energy, round(avg(carb),1) carb FROM
-(SELECT date, category FROM purchases WHERE email LIKE :email) p
+SELECT date, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy)/1000,1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
+round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
+(SELECT date, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat) fat FROM items WHERE email LIKE :email GROUP BY category) i1
+(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy) energy FROM items WHERE email LIKE :email GROUP BY category) i2
+(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb) carb FROM items WHERE email LIKE :email GROUP BY category) i3
+(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
+JOIN
+(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+ON i4.category = p.category
+JOIN
+(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+ON i5.category = p.category
+JOIN
+(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+ON i6.category = p.category
+JOIN
+(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+ON i7.category = p.category
 GROUP BY date
 ORDER BY date
+
+-- name:get-nutrition-by-date
+SELECT month, p.category category, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy)/1000,1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
+round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
+(SELECT date, strftime('%m-%Y', date) month, category, price FROM purchases WHERE email LIKE :email AND month = :month AND category IN (SELECT category FROM food_categories)) p
+JOIN
+(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+ON i1.category = p.category
+JOIN
+(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+ON i2.category = p.category
+JOIN
+(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+ON i3.category = p.category
+JOIN
+(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+ON i4.category = p.category
+JOIN
+(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+ON i5.category = p.category
+JOIN
+(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+ON i6.category = p.category
+JOIN
+(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+ON i7.category = p.category
+GROUP BY p.category
+ORDER BY :order DESC
 
 -- name:save-item!
 -- inserts new product item

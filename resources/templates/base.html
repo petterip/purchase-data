@@ -41,30 +41,35 @@ setTimeout(ldinsp, 500); document.readyState != "complete" ? (window.attachEvent
                     </div>
                     <div id="app-navbar" class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
+                          <!--
                             <li {% ifequal page "load.html" %} class="active"{%endifequal%}>
                                 <a href="{{servlet-context}}/">Upload file</a>
-                            </li>
+                            </li>-->
                             <li {% ifequal page "purchases.html" %} class="active"{%endifequal%}>
-                                <a href="{{servlet-context}}/purchases">Purchase reports</a>
+                                <a href="{{servlet-context}}/purchases">Ostosraportti</a>
                             </li>
                             <li {% ifequal page "items.html" %} class="active"{%endifequal%}>
-                                <a href="{{servlet-context}}/items">Items</a>
+                                <a href="{{servlet-context}}/items">Kuitit</a>
                             </li>
                             <li {% ifequal page "chart.html" %} class="active"{%endifequal%}>
-                                <a href="{{servlet-context}}/chart">Expenditure</a>
+                                <a href="{{servlet-context}}/chart">Kustannukset</a>
                             </li>
                             <li {% ifequal page "nutrition.html" %} class="active"{%endifequal%}>
-                                <a href="{{servlet-context}}/nutrition">Nutrition</a>
+                                <a href="{{servlet-context}}/nutrition">Ravinto-A</a>
                             </li>
+                            <li {% ifequal page "nutrition-area.html" %} class="active"{%endifequal%}>
+                                <a href="{{servlet-context}}/nutrition-area">Ravinto-B</a>
+                            </li>
+                          <!--
                             <li {% ifequal page "about.html" %} class="active"{%endifequal%}>
                                 <a href="{{servlet-context}}/about">About</a>
-                            </li>
+                            </li> -->
                         </ul>
                        <div style="float:right">
                            <a href="/chart?a#id1">1</a>
-                           <a href="/chart?a#id3">3</a> 
-                 	   <a href="/chart?b#id4">4</a> 
-                           <a href="/chart?c#id7">7</a> 
+                           <a href="/chart?a#id3">3</a>
+                 	   <a href="/chart?b#id4">4</a>
+                           <a href="/chart?c#id7">7</a>
                        </div>
                     </div>
                 </div>

@@ -168,6 +168,25 @@
     )
   )
 
+(defn api-get-nutrition-by-date [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        month (:month params)
+        order (if (:order params)
+             (:order params)
+             "fat")
+        response (db/get-nutrition-by-date {:email id :month month :order order})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body (sort-by (keyword order) > response)
+     }
+    )
+  )
+
+;(sort-by (keyword "fat") > (db/get-nutrition-by-date {:email "id1@ostosdata.oulu.fi" :month "08-2014" :order ""}))
+
 (defn api-get-purchase-totals [{:keys [params]}]
   (let [id (if (:id params)
              (:id params)
@@ -207,12 +226,15 @@
     )
   )
 
-;; Chart page
+;; Chart pages
 (defn chart-page []
   (layout/render "chart.html"))
 
 (defn nutrition-page []
   (layout/render "nutrition.html"))
+
+(defn nutrition-area-page []
+  (layout/render "nutrition_area.html"))
 
 ;; About page
 (defn about-page []
@@ -232,6 +254,7 @@
   (GET "/items" request (items-page request))
   (GET "/chart" [] (chart-page))
   (GET "/nutrition" [] (nutrition-page))
+  (GET "/nutrition-area" [] (nutrition-area-page))
   (GET "/about" [] (about-page))
 
   ; API routes
@@ -245,5 +268,6 @@
   (GET "/api/nutrition/:id" request (api-get-nutrition request "d"))
   (GET "/api/nutrition/:id/month" request (api-get-nutrition request "m"))
   (GET "/api/nutrition/:id/week" request (api-get-nutrition request "w"))
+  (GET "/api/nutrition/:id/date/:month/:order" request (api-get-nutrition-by-date request))
   )
 

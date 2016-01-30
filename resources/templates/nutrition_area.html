@@ -24,7 +24,7 @@
       //"useGraphSettings": true,
       "valueText": "[[value]]",
       "markerSize": 10,
-      "valueWidth": 30
+      "valueWidth": 40
     },
     "numberFormatter": {
       "precision": 0,
@@ -63,8 +63,8 @@
     "dataProvider": [],
     "valueAxes": [{
       "id":"v1",
-      //"stackType": "regular",
-      "axisColor": "green",
+      "stackType": "regular",
+      //"axisColor": "green",
       "axisThickness": 2,
       "gridAlpha": 0.5,
       "axisAlpha": 1,
@@ -78,12 +78,16 @@
     }, {
       "id":"v2",
       "stackType": "regular",
-      "axisColor": "red",
+      "axisColor": "cyan",
       "axisThickness": 2,
       "gridAlpha": 0,
+      "offset": 50,
       "axisAlpha": 1,
       "position": "right",
-      "title": "kJ"
+      "title": "Mcal",
+      "minimum": 0,
+      "maximum": 100,
+      "strictMinMax": true
     }, {
       "id":"v3",
       "stackType": "regular",
@@ -97,15 +101,12 @@
       //"totalText": "[[total]] e",
       "unit": " €"
     }],
-
-    // GRAPHS
-
     "graphs": [{
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Hyvää rasvaa <b>[[value]]</b> g</span>",
       "fillAlphas": 0.8,
-      "type": "column",
-      "columnWidth": 0.9,
+      "type": "line",
+      //"columnWidth": 0.9,
       "color": "orange",
       //            "lineColor": "green",
       //            "lineThickness": 2,
@@ -118,7 +119,7 @@
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Huonoa rasvaa <b>[[value]]</b> g</span>",
       "fillAlphas": 0.8,
-      "type": "column",
+      "type": "line",
       "columnWidth": 0.9,
       "color": "red",
       //            "lineColor": "green",
@@ -127,13 +128,12 @@
       //            "bulletBorderThickness": 2,
       //            "hideBulletsCount": 60,
       "title": "Huonot rasvat", // Rasva (tyydyttyneet)
-      "valueField": "fat_saturated",
-      "hidden": true
+      "valueField": "fat_saturated"
     }, {
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Hiilihydraatteja <b>[[value]]</b> g</span>",
       "fillAlphas": 0.8,
-      "type": "column",
+      "type": "line",
       "columnWidth": 0.9,
       "color": "#aa0",
 //      "newStack": true,
@@ -149,7 +149,7 @@
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Kuituja <b>[[value]]</b> g</span>",
       "fillAlphas": 0.8,
-      "type": "column",
+      "type": "line",
       "columnWidth": 0.9,
       "color": "#aa0",
 //      "newStack": true,
@@ -166,7 +166,7 @@
       "balloonText": "<span style='font-size:12px'>Sokeria <b>[[value]]</b> g</span>",
       "unit": "g",
       "fillAlphas": 0.8,
-      "type": "column",
+      "type": "line",
       "color": "#aa0",
 //      "newStack": true,
       //            "lineColor": "#aa0",
@@ -176,13 +176,12 @@
       //            "hideBulletsCount": 60,
       "title": "Sokeri",
       "valueField": "sugar",
-      "hidden": true
       //           "fillAlphas": 0.3
     }, {
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Proteiineja <b>[[value]]</b> g</span>",
       "fillAlphas": 0.8,
-      "type": "column",
+      "type": "line",
       "columnWidth": 0.9,
       "color": "#aa0",
 //      "newStack": true,
@@ -193,7 +192,6 @@
       //            "hideBulletsCount": 60,
       "title": "Proteiinit",
       "valueField": "prot",
-      "hidden": true
       //           "fillAlphas": 0.3
     }, {
       "valueAxis": "v3",
@@ -215,27 +213,29 @@
       "title": "Hinta",
       "valueField": "price",
       //            "fillAlphas": 0.6
-    } /*, {
+    }, {
       "valueAxis": "v2",
       "balloonText": "<span style='font-size:12px'>Energiaa <b>[[value]]</b> kJ</span>",
-      "fillAlphas": 0,
-      "type": "line",
-      "color": "green",
-      "lineColor": "green",
-      "lineThickness": 3,
-      "lineAlpha": 0.8,
-      "bullet": "square",
-      "bulletColor": "#4a4",
-      "bulletAlpha": 0.8,
-      "bulletBorderThickness": 2,
-      "bulletSize": 10,
-      "bulletBorderAlpha": 1,
-      "useLineColorForBulletBorder": true,
+      "fillAlphas": 0.4,
+      "type": "column",
+      "color": "cyan",
+      "lineColor": "cyan",
+      "lineThickness": 1,
+      "lineAlpha": 0.6,
+      "minMaxMultiplier": 0.2,
+      "columnWidth": 0.4,
+      //"bullet": "square",
+      //"bulletColor": "#4a4",
+      //"bulletAlpha": 0.8,
+      //"bulletBorderThickness": 2,
+      //"bulletSize": 10,
+      //"bulletBorderAlpha": 1,
+      //"useLineColorForBulletBorder": true,
       //            "hideBulletsCount": 60,
       "title": "Energia",
       "valueField": "energy",
       //            "fillAlphas": 0.6
-    } */],
+    }],
     "chartScrollbar": { "enabled": false },
     "chartCursor": {
       "cursorPosition": "middle",
@@ -379,7 +379,7 @@
                      "</tr>" );
       });
 
-      $( "<p style='color:#c00'>Huonoa rasvaa:</p>" ).appendTo("#panel1");
+      $( "<p style='color:#cc0'>Huonoa rasvaa:</p>" ).appendTo("#panel1");
       $( "<table/>", {
         "class": "table",
         html: items.join( "" )
@@ -446,6 +446,20 @@
       $("#panel4").empty();
 
       $( "<p>Sokerisimmat ("+category+"):</p>" ).appendTo("#panel4");
+      $( "<table/>", {
+        "class": "table",
+        html: items.join( "" )
+      }).appendTo( "#panel4" );
+
+      // energy
+      $.each( sortJsonField(data, "energy"), function( index, elem ) {
+        if(elem.energy > 0)
+          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                     "<td style='text-align:right' class='"+elem.energy+"'>" + elem.energy + " g</td>" +
+                     "</tr>" );
+      });
+
+      $( "<p style='color:darkcyan'>Eniten energiaa:</p>" ).appendTo("#panel4");
       $( "<table/>", {
         "class": "table",
         html: items.join( "" )

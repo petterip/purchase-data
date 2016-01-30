@@ -1,6 +1,7 @@
 (ns analytics.recognize
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io])
+  (:require [clojure.string :refer :all])
   (:require [clj-time.core :as t])
   (:require [clj-time.format :as f])
   (:require [clj-time.local :as l])
@@ -15,7 +16,7 @@
 (import TestApp TestApp)
 
 (def args (make-array String 4))
-(def ignore-strings "YHTEENS|AVOINNA|Bonukseen|Bonuksen|kirjattu|KORTTITAPAHTUMA|Kortti|Autentisointi|Viite:|Veloitus|###|Tap. nro|Yritys/ala|Veroton|Verollinen|MAKSAESSASI|SAAT MEILT|Osuuskauppa")
+(def ignore-strings "YHTEENS|AVOINNA|Bonukseen|Bonuksen|kirjattu|KORTTITAPAHTUMA|TAKAISIN|Kortti|Autentisointi|Viite:|Veloitus|###|Tap. nro|Yritys/ala|Veroton|Verollinen|MAKSAESSASI|SAAT MEILT|Osuuskauppa")
 
 ;; Item is relevant (ie. real product), if its name is longer than 4 characters and the name does not match any words in the ignore-list
 (defn relevant? [item]
@@ -101,6 +102,13 @@
 ;(float (* 2.5 (bigdec "3")))
 ;(float (read-string "2.5"))
 ;(read-text-file "src/results_30.9.txt" "sadf@asdf" "2015-11-22")
+;(def line "   7 YTVAITO          60                    2.92        ")
+;(def line "   «»..m»»    w*l t                       13.92       ")
+;(def line "p/tmm 3X85G                      0.85 ")
+;(def line " MARGARIINI 60%                           1.09")
+(def line "RUISRUB 3 KPL 1-69   ")
+(re-find #"(.{10,37})\s{1,}(\d+.+)" line)
+;(re-find #"(\D+) ([\d\.]+)" line)
 
 (defn read-text-file [text-file email date]
   (with-open [rdr (io/reader text-file)]
@@ -113,14 +121,14 @@
       (doseq [line (take 500 parsed-lines)]
 
         ;(println "Reading line: " line)
-        (let [matches (mapv clojure.string/trim (re-find #"(\D+) ([\d\.]+)" (str line)))
+        (let [matches (mapv clojure.string/trim (re-find #"(.{10,37})\s{1,}(\d+.+)" (str line)))    ; (re-find #"(\D+) ([\d\.]+)" (str line))
               item (get matches 1)
               price (get matches 2)]
           ;(println item price)
           (if (and (relevant? item) (not (nil? price)))
              (do
                (println "Trying: " item "...")
-               (let [close-eans (keep (fuzzy-dice item 0.6) ((:message products-json) :products))]
+               (let [close-eans (keep (fuzzy-dice (trim item) 0.6) ((:message products-json) :products))]
                  (if (not (empty? close-eans))
                    (do
                      (println "Close-eans: " (apply max-key first close-eans))
@@ -147,7 +155,7 @@
                        (println " Energy:" energy "Carb:" carb "Fiber:" fiber "Fat:" fat "Prot:" prot "Salt:" salt "Weight:" weight "Type:" is-food)
                        (db/save-item! {:name name
                                        :ean ean
-                                       :price price
+                                       :price (trim price)
                                        :sourcefile text-file
                                        :email email
                                        :date date

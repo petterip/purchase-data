@@ -72,7 +72,7 @@ form, .error {
   font: 11px "Verdana";
   padding-left: 65px;
   float: left;
-  width: 36%
+  width: 36%;
 }
 
 #infodiv table, #topdiv table {
@@ -82,7 +82,7 @@ form, .error {
   height: 276px;
   overflow-y: scroll;
 }
-#infodiv td, #topdiv td {
+#infodiv td, #topdiv td, #info td {
   line-height: 10px;
   padding: 4px;
 }
@@ -91,4 +91,47 @@ form, .error {
 }
 #infodiv td.other {
   color: blue;
+}
+
+#info {
+  background-color: #fdfdfd;
+  font: 10px "Verdana";
+  padding: 30px 10px;
+  float: left;
+  width: 100%;
+}
+
+#info div {
+  float: left;
+  width: 20%;
+  padding-left: 15px;
+}
+
+#panel1 p {
+  color: #67b7dc;
+  font-weight: bold;
+}
+
+#panel2 p {
+  color: #84b761;
+  font-weight: bold;
+}
+
+#panel3 p {
+  color: #cc4748;
+  font-weight: bold;
+}
+
+#panel4 p {
+  color: #cd82ad;
+  font-weight: bold;
+}
+
+#panel5 p {
+  color: #aa0;
+  font-weight: bold;
+}
+
+.amcharts-chart-div {
+  background-color: #fdfdfd !important;
 }
