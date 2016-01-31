@@ -15,8 +15,8 @@
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-  var id = (window.location.hash) ? window.location.hash.substring(1) : "id1";
-  //    var chartData = generateChartData();
+  var secret = atob(getURLParameter('secret'));
+  var id = secret ? secret : "id1";
   var chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
     "theme": "light",
@@ -338,7 +338,7 @@
   function clickGraph(e)
   {
     var i = e.chart.chartCursor.index;
-    console.log(chart.categoryAxis.data[i].dataContext.month);
+    //console.log(chart.categoryAxis.data[i].dataContext.month);
   }
 
   function clickGraphItem(e)

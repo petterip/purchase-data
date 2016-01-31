@@ -3,6 +3,7 @@
             [compojure.core :refer [defroutes GET POST]]
             [ring.util.http-response :refer [ok]]
             [clojure.java.io :as io]
+            [clojure.data.codec.base64 :as b64]
 
             [analytics.db.core :as db]
             [analytics.db-test :as dbt]
@@ -95,12 +96,26 @@
           (select-keys flash [:errors]))))
 
 ;; Items page
-(defn items-page [{:keys [flash]}]
-  (layout/render
-   "items.html"
-   (merge {:files (db/get-files-of-type {:type "txt"})}
-          {:items (db/get-items {:email "%"})}
-          (select-keys flash [:errors]))))
+(defn items-page [request]
+  (let [flash (:keys request)
+        query (:query-params request)
+        secret (second (first query))
+        id (if (nil? secret)
+             "%"
+             (str (String. (b64/decode (.getBytes secret))) "@ostosdata.oulu.fi"))]
+    (println "secret=" secret)
+    (println "q=" query)
+    (println "id=" id)
+    (layout/render
+      "items.html"
+      (merge {:files (db/get-files-of-type {:type "txt"})}
+             {:items (db/get-items {:email id})}
+             (select-keys flash [:errors])))))
+
+(def query {"secret" "asf"})
+(println (second (first nil)))
+(:secret query)
+(str "asd" "dafdsf")
 
 ;; Home page
 (defn home-page [{:keys [flash]}]
