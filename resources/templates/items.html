@@ -38,32 +38,5 @@
     </table>
 </div>
 </div>
-<div class="row">
-    <div class="files span12">
-        <table id="files" class="table" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>Receipt</th>
-                    <th>Date of visit</th>
-                    <th>Store</th>
-                    <th>Informant ID</th>
-                    <th>Upload timestamp</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in files %}
-                <tr>
-                    <td>{{item.fname}}</td>
-                    <td>{{item.date}}</td>
-                    <td>{{item.store}}</td>
-                    <td>{{item.email}}</td>
-                    <td>{{item.timestamp|date:"yyyy-MM-dd HH:mm"}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-    </div>
-</div>
 {% endblock %}
 </script>

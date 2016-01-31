@@ -106,8 +106,9 @@
 ;(def line "   «»..m»»    w*l t                       13.92       ")
 ;(def line "p/tmm 3X85G                      0.85 ")
 ;(def line " MARGARIINI 60%                           1.09")
-(def line "RUISRUB 3 KPL 1-69   ")
-(re-find #"(.{10,37})\s{1,}(\d+.+)" line)
+;(def line "RUISRUB 3 KPL 1-69   ")
+;(def line "rasvaton maito                           1")
+;(re-find #"(.{10,37})\s{1,}(\d+.*)" line)
 ;(re-find #"(\D+) ([\d\.]+)" line)
 
 (defn read-text-file [text-file email date]
@@ -121,7 +122,7 @@
       (doseq [line (take 500 parsed-lines)]
 
         ;(println "Reading line: " line)
-        (let [matches (mapv clojure.string/trim (re-find #"(.{10,37})\s{1,}(\d+.+)" (str line)))    ; (re-find #"(\D+) ([\d\.]+)" (str line))
+        (let [matches (mapv clojure.string/trim (re-find #"(.{10,37})\s{1,}(\d+.*)" (str line)))    ; (re-find #"(\D+) ([\d\.]+)" (str line))
               item (get matches 1)
               price (get matches 2)]
           ;(println item price)
