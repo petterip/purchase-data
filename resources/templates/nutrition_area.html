@@ -15,7 +15,7 @@
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-  var id = (window.location.hash) ? window.location.hash.substring(1) : "id7";
+  var id = (window.location.hash) ? window.location.hash.substring(1) : "id1";
   //    var chartData = generateChartData();
   var chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
@@ -358,7 +358,7 @@
       $.each( sortJsonField(data, "fat"), function( index, elem ) {
         if(elem.fat > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -375,7 +375,7 @@
       $.each( sortJsonField(data, "fat_saturated"), function( index, elem ) {
         if(elem.fat_saturated > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat_saturated + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat_saturated + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -390,7 +390,7 @@
       $.each( sortJsonField(data, "carb"), function( index, elem ) {
         if(elem.carb > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.carb+"'>" + elem.carb + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.carb+"'>" + elem.carb + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -407,7 +407,7 @@
       $.each( sortJsonField(data, "fiber"), function( index, elem ) {
         if(elem.fiber > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fiber+"'>" + elem.fiber + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.fiber+"'>" + elem.fiber + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -424,7 +424,7 @@
       $.each( sortJsonField(data, "prot"), function( index, elem ) {
         if(elem.prot > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.prot+"'>" + elem.prot + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.prot+"'>" + elem.prot + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -439,7 +439,7 @@
       $.each( sortJsonField(data, "sugar"), function( index, elem ) {
         if(elem.sugar > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.sugar+"'>" + elem.sugar + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.sugar+"'>" + elem.sugar + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -455,7 +455,7 @@
       $.each( sortJsonField(data, "energy"), function( index, elem ) {
         if(elem.energy > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.energy+"'>" + elem.energy + " g</td>" +
+                     "<td style='text-align:right' class='"+elem.energy+"'>" + elem.energy + "&nbsp;g</td>" +
                      "</tr>" );
       });
 
@@ -470,7 +470,7 @@
       $.each( sortJsonField(data, "price"), function( index, elem ) {
         if(elem.price > 0)
           items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.price+"'>" + elem.price + " €</td>" +
+                     "<td style='text-align:right' class='"+elem.price+"'>" + elem.price + "&nbsp;€</td>" +
                      "</tr>" );
       });
 
@@ -481,6 +481,11 @@
         "class": "table",
         html: items.join( "" )
       }).appendTo( "#panel5" );
+
+      $( "<a/>" , { html: ">> Näytä kaikki" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+
+      $("#info tr").hide();
+      $("#info tr:nth-child(-n+5)").show();
 
     });
   }

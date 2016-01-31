@@ -188,8 +188,8 @@ GROUP BY date
 ORDER BY date
 
 -- name:get-nutrition-by-date
-SELECT month, p.category category, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy)/1000,1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
-round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
+SELECT month, p.category category, round(sum(fat)) fat, round(sum(fat_saturated)) fat_saturated, round(sum(energy)/1000) energy, round(sum(carb)) carb, round(sum(fiber)) fiber,
+round(sum(prot)) prot, round(sum(sugar)) sugar, round(sum(price)) price FROM
 (SELECT date, strftime('%m-%Y', date) month, category, price FROM purchases WHERE email LIKE :email AND month = :month AND category IN (SELECT category FROM food_categories)) p
 JOIN
 (SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
