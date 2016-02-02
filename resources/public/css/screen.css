@@ -102,9 +102,56 @@ form, .error {
 }
 
 #info div {
+  padding-left: 15px;
+}
+
+#instructions
+{
+  width: 100%;
+  clear: both;
+}
+
+#instructions p {
+  color: black;
+  font-weight: bold;
+}
+
+.panel {
   float: left;
   width: 20%;
-  padding-left: 15px;
+}
+
+.col-xs-15,
+.col-sm-15,
+.col-md-15,
+.col-lg-15 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.col-xs-15 {
+    width: 20%;
+    float: left;
+}
+@media (min-width: 768px) {
+.col-sm-15 {
+        width: 20%;
+        float: left;
+    }
+}
+@media (min-width: 992px) {
+    .col-md-15 {
+        width: 20%;
+        float: left;
+    }
+}
+@media (min-width: 1200px) {
+    .col-lg-15 {
+        width: 20%;
+        float: left;
+    }
 }
 
 #panel1 p {
@@ -132,15 +179,25 @@ form, .error {
   font-weight: bold;
 }
 
-#pies div {
-  width: 33%;
-  float: right;
-  display: block;
-  padding-left: 15px;
-  background-color: #fdfdfd;
-  height: 200px;
+#panel5 a {
+  font-weight: bold;
 }
 
 .amcharts-chart-div {
   background-color: #fdfdfd !important;
+}
+
+span.green {
+  font-weight: bold;
+  color: green;
+}
+
+span.red {
+  font-weight: bold;
+  color: red;
+}
+
+span.yellow {
+  font-weight: bold;
+  color: #990;
 }

@@ -4,13 +4,12 @@
   <div class="files span12">
     <div id="chartdiv"></div>
     <div id="info">
-      <div id="panel1">Seurantajakso: 547 päivää<br>
-Rasva:	18.5g/pv (suositus 56-89g/pv)
-</div>
-      <div id="panel2">Huono rasva: 0.6g/pv (0-22g/pv)</div>
-      <div id="panel3">Hiilihydraatit: 44.4g/pv<br>Kuidut: 3.5g/pv</div>
-      <div id="panel4">Proteiinit: 24.1g/pv <br>Sokerit: 23.6g/pv</div>
-      <div id="panel5">Hinta: 1.76€/pv Kok.paino: 412.7g/pv</div>
+      <div id="instructions"><!-- <em>Klikkaa kaaviossa nähdäksesi tarkemmat ravintotiedot kyseiseltä kuukaudelta.<br/> </em> --></div>
+      <div class="col-md-15" id="panel1"></div>
+      <div class="col-md-15" id="panel2"></div>
+      <div class="col-md-15" id="panel3"></div>
+      <div class="col-md-15" id="panel4"></div>
+      <div class="col-md-15" id="panel5"></div>
     </div>
   </div>
 </div>
@@ -248,20 +247,6 @@ Rasva:	18.5g/pv (suositus 56-89g/pv)
       "parseDates": false,
       "axisColor": "#DADADA",
       "minorGridEnabled": true,
-      "listeners": [{"event":"rollOverItem", "method":clickGraph}],
-      /*            "guides": [{
-                  date: "Oct 10, 2015",
-                  toDate: "Dec 10, 2015",
-                  lineColor: "#CC0000",
-                  lineAlpha: 1,
-                  fillAlpha: 0.2,
-                  fillColor: "#CC0000",
-                  dashLength: 2,
-                  inside: true,
-                  labelRotation: 90,
-
-                  label: "kuitteihin perustuva data"
-              }] */
     },
     "export": {
       "enabled": true,
@@ -272,75 +257,67 @@ Rasva:	18.5g/pv (suositus 56-89g/pv)
   chart.addListener("dataUpdated", zoomChart);
   chart.addListener("clickGraphItem", clickGraphItem);
   chart.addListener("clickGraph", clickGraphItem);
-  //chart.addListener("rollOverGraphItem", clickGraph);
   $("#chartdiv").on("click", clickGraphItem);
   zoomChart();
+  showTotals();
+
+  function showTotals() {
+    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi"+"/total", function( data ) {
+      var total = data[0];
+      var days = total.days;
+      var subjective_consumption = { "id1":1870,"id2":3269,"id3":2000,"id4":2969,"id5":2117,"id6":2797,"id7":3058,"id8":2157 };
+      var energy_consumption = subjective_consumption[id];
+
+      $("#panel1").empty();
+      $("#panel2").empty();
+      $("#panel3").empty();
+      $("#panel4").empty();
+      $("#panel5").empty();
+
+      $("<p>Ostosten ravintoarvot jaettuna per päivä (" + total.days + " päivää)</p>").appendTo("#instructions");
+
+      $("<span>Rasva:	" + totalString(total.fat/days, energy_consumption*0.25/9, energy_consumption*0.4/9, "g/pv") +
+              "Huono rasva: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
+
+      $("<span>Hiilihydraatit: " + totalString(total.carb/days, energy_consumption*0.45/4, energy_consumption*0.60/4, "g/pv")).appendTo("#panel2");
+
+      $("<span>Kuidut: " + totalString(total.fiber/days, 25, 35, "g/pv") +
+              "Proteiinit: " + totalString(total.prot/days, energy_consumption*0.1/4, energy_consumption*0.2/4, "g/pv")).appendTo("#panel3");
+
+      $("<span>Sokeri: " + totalString(total.sugar/days, 0, energy_consumption*0.1/2, "g/pv")).appendTo("#panel4");
+
+      $("<span>Hinta: " + totalString(total.price/days, 0, 0, "€/pv" ) +
+              "Paino: " + totalString(total.weight/days, 0, 0, "g/pv")).appendTo("#panel5");
+    });
+  }
+
+  function totalString( value, min, max, unit ) {
+    var value_rounded;
+
+    if (value < 2)
+      value_rounded = Math.round(value*10)/10;
+    else
+      value_rounded = Math.round(value);
+
+    if (max)
+      return "<span class='" + (value < min ? "yellow" : value < max ? "green" : "red") + "'>" + value_rounded + " " + unit + "</span><br/>(suositus " + Math.round(min) + "-" + Math.round(max) + " " + unit + ")<br/><br/>";
+    else
+      return "<strong>" + value_rounded + " " + unit + "</strong><br/><br/>";
+
+  }
 
   function postProcess(chartData, config) {
     alert("Got " + chartData.length);
     return chartData;
   }
 
-  // generate some random data, quite different range
-  function generateChartData() {
-    var chartData = [];
-    var firstDate = new Date();
-    var promise = $.Deferred();
-
-    firstDate.setDate(firstDate.getDate() - 100);
-
-    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi", function( data ) {
-      var items = [];
-      $.each( data, function( index, elem ) {
-        chartData.push({
-          date: elem.date,
-          fat: elem.fat,
-          energy: elem.energy,
-          carb: elem.carb
-        });
-      });
-
-      //alert("Generated " + chartData.length);
-
-    });
-
-    /*
-          for (var i = 0; i < 100; i++) {
-              // we create date objects here. In your data, you can have date strings
-              // and then set format of your dates using chart.dataDateFormat property,
-              // however when possible, use date objects, as this will speed up chart rendering.
-              var newDate = new Date(firstDate);
-              newDate.setDate(newDate.getDate() + i);
-
-              var visits = Math.round(Math.random() * 40) + 100;
-              var hits = Math.round(Math.random() * 80) + 500;
-              var views = Math.round(Math.random() * 600);
-
-              chartData.push({
-                  date: newDate,
-                  visits: visits,
-                  hits: hits,
-                  views: views
-              });
-          } */
-
-    return $.when(promise).done(function(){
-      console.log('both tasks in function1 are done');
-      return chartData;
-      // Asyncs tasks are done
-    }).promise();
-
+  function postProcess(chartData, config) {
+    alert("Got " + chartData.length);
     return chartData;
   }
 
   function zoomChart(){
     chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
-  }
-
-  function clickGraph(e)
-  {
-    var i = e.chart.chartCursor.index;
-    //console.log(chart.categoryAxis.data[i].dataContext.month);
   }
 
   function clickGraphItem(e)
@@ -349,9 +326,6 @@ Rasva:	18.5g/pv (suositus 56-89g/pv)
     var clickedDate = chart.categoryAxis.data[i].dataContext.month;
     var clickedDate2 = chart.categoryAxis.data[i].dataContext.date;
     var category = clickedDate2.replace("<br>", " ").toLowerCase();
-    //var clickedDate = e.item.serialDataItem.dataContext.date;
-
-    console.log("CLICK: " + "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fat");
 
     $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fiber", function( data ) {
       var items = [];
@@ -364,6 +338,7 @@ Rasva:	18.5g/pv (suositus 56-89g/pv)
                      "</tr>" );
       });
 
+      $("#instructions").empty();
       $("#panel1").empty();
 
       $( "<p>Rasvaisimmat ostokset ("+category+"):</p>" ).appendTo("#panel1");
@@ -470,7 +445,9 @@ Rasva:	18.5g/pv (suositus 56-89g/pv)
         html: items.join( "" )
       }).appendTo( "#panel5" );
 
-      $( "<a/>" , { html: ">> Näytä kaikki" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+      $("<a/>" , { href: "#", html: ">> Näytä kaikki arvot" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+      $("<br/>").appendTo("#panel5");
+      $("<a/>" , { href: "#", html: ">> Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
 
       $("#info tr").hide();
       $("#info tr:nth-child(-n+5)").show();
