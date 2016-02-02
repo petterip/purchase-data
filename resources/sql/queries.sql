@@ -106,25 +106,25 @@ SELECT date, month, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_satur
 round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
 (SELECT date, strftime('%m-%Y', date) month, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat * weight / 100) ELSE avg(fat * 350 / 100) END AS fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+(SELECT category, CASE WHEN weight > 0 THEN avg(energy * weight / 100) ELSE avg(energy * 350 / 100) END AS energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+(SELECT category, CASE WHEN weight > 0 THEN avg(carb * weight / 100) ELSE avg(carb * 350 / 100) END AS carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
 JOIN
-(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+(SELECT category, CASE WHEN weight > 0 THEN avg(fiber * weight / 100) ELSE avg(fiber * 350 / 100) END AS fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
 ON i4.category = p.category
 JOIN
-(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * weight / 100) ELSE avg(fat_saturated * 350 / 100) END AS fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
 ON i5.category = p.category
 JOIN
-(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+(SELECT category, CASE WHEN weight > 0 THEN avg(prot * weight / 100) ELSE avg(prot * 350 / 100) END AS prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
 ON i6.category = p.category
 JOIN
-(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+(SELECT category, CASE WHEN weight > 0 THEN avg(sugar * weight / 100) ELSE avg(sugar * 350 / 100) END AS sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
 ON i7.category = p.category
 GROUP BY month
 ORDER BY date
@@ -135,25 +135,25 @@ SELECT date, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, r
 round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
 (SELECT date, strftime('%Y-%W', date) week, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat * weight / 100) ELSE avg(fat * 350 / 100) END AS fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+(SELECT category, CASE WHEN weight > 0 THEN avg(energy * weight / 100) ELSE avg(energy * 350 / 100) END AS energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+(SELECT category, CASE WHEN weight > 0 THEN avg(carb * weight / 100) ELSE avg(carb * 350 / 100) END AS carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
 JOIN
-(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+(SELECT category, CASE WHEN weight > 0 THEN avg(fiber * weight / 100) ELSE avg(fiber * 350 / 100) END AS fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
 ON i4.category = p.category
 JOIN
-(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * ELSE avg(fat_saturated * 350 / 100) END AS weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
 ON i5.category = p.category
 JOIN
-(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+(SELECT category, CASE WHEN weight > 0 THEN avg(prot * weight / 100) ELSE avg(prot * 350 / 100) END AS prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
 ON i6.category = p.category
 JOIN
-(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+(SELECT category, CASE WHEN weight > 0 THEN avg(sugar * weight / 100) ELSE avg(sugar * 350 / 100) END AS sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
 ON i7.category = p.category
 GROUP BY week
 ORDER BY date
@@ -164,25 +164,25 @@ SELECT date, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, r
 round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(price),2) price FROM
 (SELECT date, category, price FROM purchases WHERE email LIKE :email) p
 JOIN
-(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat * weight / 100) ELSE avg(fat * 350 / 100) END AS fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+(SELECT category, CASE WHEN weight > 0 THEN avg(energy * weight / 100) ELSE avg(energy * 350 / 100) END AS energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+(SELECT category, CASE WHEN weight > 0 THEN avg(carb * weight / 100) ELSE avg(carb * 350 / 100) END AS carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
 JOIN
-(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+(SELECT category, CASE WHEN weight > 0 THEN avg(fiber * weight / 100) ELSE avg(fiber * 350 / 100) END AS fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
 ON i4.category = p.category
 JOIN
-(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * weight / 100) ELSE avg(fat_saturated * 350 / 100) END AS fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
 ON i5.category = p.category
 JOIN
-(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+(SELECT category, CASE WHEN weight > 0 THEN avg(prot * weight / 100) ELSE avg(prot * 350 / 100) END AS prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
 ON i6.category = p.category
 JOIN
-(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+(SELECT category, CASE WHEN weight > 0 THEN avg(sugar * weight / 100) ELSE avg(sugar * 350 / 100) END AS sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
 ON i7.category = p.category
 GROUP BY date
 ORDER BY date
@@ -192,28 +192,53 @@ SELECT month, p.category category, round(sum(fat)) fat, round(sum(fat_saturated)
 round(sum(prot)) prot, round(sum(sugar)) sugar, round(sum(price)) price FROM
 (SELECT date, strftime('%m-%Y', date) month, category, price FROM purchases WHERE email LIKE :email AND month = :month AND category IN (SELECT category FROM food_categories)) p
 JOIN
-(SELECT category, avg(fat * weight / 100) fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat * weight / 100) ELSE avg(fat * 350 / 100) END AS fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
 ON i1.category = p.category
 JOIN
-(SELECT category, avg(energy * weight / 100) energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+(SELECT category, CASE WHEN weight > 0 THEN avg(energy * weight / 100) ELSE avg(fat * 350 / 100) END AS energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
 ON i2.category = p.category
 JOIN
-(SELECT category, avg(carb * weight / 100) carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+(SELECT category, CASE WHEN weight > 0 THEN avg(carb * weight / 100) ELSE avg(fat * 350 / 100) END AS carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
 ON i3.category = p.category
 JOIN
-(SELECT category, avg(fiber * weight / 100) fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+(SELECT category, CASE WHEN weight > 0 THEN avg(fiber * weight / 100) ELSE avg(fiber * 350 / 100) END AS fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
 ON i4.category = p.category
 JOIN
-(SELECT category, avg(fat_saturated * weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * weight / 100) ELSE avg(fat_saturated * 350 / 100) END AS fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
 ON i5.category = p.category
 JOIN
-(SELECT category, avg(prot * weight / 100) prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+(SELECT category, CASE WHEN weight > 0 THEN avg(prot * weight / 100) ELSE avg(prot * 350 / 100) END AS prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
 ON i6.category = p.category
 JOIN
-(SELECT category, avg(sugar * weight / 100) sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+(SELECT category, CASE WHEN weight > 0 THEN avg(sugar * weight / 100) ELSE avg(sugar * 350 / 100) END AS sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
 ON i7.category = p.category
 GROUP BY p.category
 ORDER BY :order DESC
+
+-- name:get-nutrition-total
+-- gets nutritional values for fat, saturated fat, energy, carbs, fiber, protein, added sugar, salt and price, weight for all the purchases over the year
+SELECT julianday(max(date))-julianday(min(date)) days, round(sum(fat),1) fat, round(sum(fat_saturated),1) fat_saturated, round(sum(energy),1) energy, round(sum(carb),1) carb, round(sum(fiber),1) fiber,
+round(sum(prot),1) prot, round(sum(sugar),1) sugar, round(sum(salt),1) salt, round(sum(price),2) price, round(sum(weight),1) weight FROM
+(SELECT date, price, category FROM purchases WHERE email LIKE :email) p
+JOIN (SELECT category, case when weight > 0 then avg(fat * weight / 100) else avg(fat * 350 / 100) end as fat FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i1
+ON i1.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(energy * weight / 100) else avg(energy * 350 / 100) end as energy FROM items WHERE food = 1 AND (email LIKE :email OR email="generic") GROUP BY category) i2
+ON i2.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(carb * weight / 100) else avg(carb * 350 / 100) end as carb FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i3
+ON i3.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(fiber * weight / 100) else avg(fiber * 350 / 100) end as fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
+ON i4.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(fat_saturated * weight / 100) else avg(fat_saturated * 350 / 100) end as fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+ON i5.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(prot * weight / 100) else avg(prot * 350 / 100) end as prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6
+ON i6.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(sugar * weight / 100) else avg(sugar * 350 / 100) end as sugar FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i7
+ON i7.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(salt * weight / 100) else avg(salt * 350 / 100) end as salt FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i8
+ON i8.category = p.category
+JOIN (SELECT category, case when weight > 0 then avg(weight) else 350 end as weight FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i9
+ON i9.category = p.category
+
 
 -- name:save-item!
 -- inserts new product item

@@ -132,6 +132,15 @@ form, .error {
   font-weight: bold;
 }
 
+#pies div {
+  width: 33%;
+  float: right;
+  display: block;
+  padding-left: 15px;
+  background-color: #fdfdfd;
+  height: 200px;
+}
+
 .amcharts-chart-div {
   background-color: #fdfdfd !important;
 }

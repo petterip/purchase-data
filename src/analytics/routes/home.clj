@@ -169,6 +169,19 @@
     )
   )
 
+(defn api-get-nutrition-total [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-nutrition-total {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
 (defn api-get-purchases-by-date [{:keys [params]}]
   (let [id (if (:id params)
              (:id params)
@@ -251,6 +264,9 @@
 (defn nutrition-area-page []
   (layout/render "nutrition_area.html"))
 
+(defn nutrition-total-page []
+  (layout/render "nutrition_total.html"))
+
 ;; About page
 (defn about-page []
   (layout/render "about.html"))
@@ -270,6 +286,7 @@
   (GET "/chart" [] (chart-page))
   (GET "/nutrition" [] (nutrition-page))
   (GET "/nutrition-area" [] (nutrition-area-page))
+  (GET "/nutrition-total" [] (nutrition-total-page))
   (GET "/about" [] (about-page))
 
   ; API routes
@@ -284,5 +301,6 @@
   (GET "/api/nutrition/:id/month" request (api-get-nutrition request "m"))
   (GET "/api/nutrition/:id/week" request (api-get-nutrition request "w"))
   (GET "/api/nutrition/:id/date/:month/:order" request (api-get-nutrition-by-date request))
+  (GET "/api/nutrition/:id/total" request (api-get-nutrition-total request))
   )
 
