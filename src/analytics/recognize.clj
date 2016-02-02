@@ -107,8 +107,10 @@
 ;(def line "p/tmm 3X85G                      0.85 ")
 ;(def line " MARGARIINI 60%                           1.09")
 ;(def line "RUISRUB 3 KPL 1-69   ")
-;(def line "rasvaton maito                           1")
-;(re-find #"(.{10,37})\s{1,}(\d+.*)" line)
+(def line "OMENA    5.57")
+(re-find #"(.{10,37})\s{1,}(\d+.*)" (str line))
+(mapv clojure.string/trim (re-find #"(.{8,37})\s{1,}(\d+.*)" (str line)))
+
 ;(re-find #"(\D+) ([\d\.]+)" line)
 
 (defn read-text-file [text-file email date]
@@ -122,14 +124,14 @@
       (doseq [line (take 500 parsed-lines)]
 
         ;(println "Reading line: " line)
-        (let [matches (mapv clojure.string/trim (re-find #"(.{10,37})\s{1,}(\d+.*)" (str line)))    ; (re-find #"(\D+) ([\d\.]+)" (str line))
+        (let [matches (mapv clojure.string/trim (re-find #"(.{8,37})\s{1,}(\d+.*)" (str line)))    ; (re-find #"(\D+) ([\d\.]+)" (str line))
               item (get matches 1)
               price (get matches 2)]
           ;(println item price)
           (if (and (relevant? item) (not (nil? price)))
              (do
                (println "Trying: " item "...")
-               (let [close-eans (keep (fuzzy-dice (trim item) 0.6) ((:message products-json) :products))]
+               (let [close-eans (keep (fuzzy-dice item 0.6) ((:message products-json) :products))]
                  (if (not (empty? close-eans))
                    (do
                      (println "Close-eans: " (apply max-key first close-eans))
@@ -156,7 +158,7 @@
                        (println " Energy:" energy "Carb:" carb "Fiber:" fiber "Fat:" fat "Prot:" prot "Salt:" salt "Weight:" weight "Type:" is-food)
                        (db/save-item! {:name name
                                        :ean ean
-                                       :price (trim price)
+                                       :price price
                                        :sourcefile text-file
                                        :email email
                                        :date date
