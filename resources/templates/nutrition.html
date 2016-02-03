@@ -64,18 +64,12 @@
     "dataProvider": [],
     "valueAxes": [{
       "id":"v1",
-      //"stackType": "regular",
       "axisColor": "green",
       "axisThickness": 2,
       "gridAlpha": 0.5,
       "axisAlpha": 1,
       "position": "left",
-      "title": "g/100 g",
-      /*            "gridCount": 10,
-              "autoGridCount": false,
-              "minimum": 0,
-              "maximum": (id == "id7" ? 50 : (id == "id5" ? 120 : 70)),
-              "strictMinMax": true */
+      "title": "grammaa",
     }, {
       "id":"v2",
       "stackType": "regular",
@@ -95,7 +89,6 @@
       "axisAlpha": 1,
       "position": "right",
       "title": "euroa",
-      //"totalText": "[[total]] e",
       "unit": " €"
     }],
 
@@ -108,11 +101,6 @@
       "type": "column",
       "columnWidth": 0.9,
       "color": "orange",
-      //            "lineColor": "green",
-      //            "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Hyvät rasvat", // Rasva (tyydyttymättömät)
       "valueField": "fat"
     }, {
@@ -122,11 +110,6 @@
       "type": "column",
       "columnWidth": 0.9,
       "color": "red",
-      //            "lineColor": "green",
-      //            "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Huonot rasvat", // Rasva (tyydyttyneet)
       "valueField": "fat_saturated",
       "hidden": true
@@ -137,12 +120,6 @@
       "type": "column",
       "columnWidth": 0.9,
       "color": "#aa0",
-//      "newStack": true,
-      //            "lineColor": "#aa0",
-      //       	    "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Hiilihydraatit",
       "valueField": "carb",
       //           "fillAlphas": 0.3
@@ -153,12 +130,6 @@
       "type": "column",
       "columnWidth": 0.9,
       "color": "#aa0",
-//      "newStack": true,
-      //            "lineColor": "#aa0",
-      //       	    "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Kuidut",
       "valueField": "fiber",
       //           "fillAlphas": 0.3
@@ -169,12 +140,6 @@
       "fillAlphas": 0.8,
       "type": "column",
       "color": "#aa0",
-//      "newStack": true,
-      //            "lineColor": "#aa0",
-      //       	    "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Sokeri",
       "valueField": "sugar",
       "hidden": true
@@ -186,12 +151,6 @@
       "type": "column",
       "columnWidth": 0.9,
       "color": "#aa0",
-//      "newStack": true,
-      //            "lineColor": "#aa0",
-      //       	    "lineThickness": 2,
-      //            "bullet": "round",
-      //            "bulletBorderThickness": 2,
-      //            "hideBulletsCount": 60,
       "title": "Proteiinit",
       "valueField": "prot",
       "hidden": true
@@ -216,27 +175,7 @@
       "title": "Hinta",
       "valueField": "price",
       //            "fillAlphas": 0.6
-    } /*, {
-      "valueAxis": "v2",
-      "balloonText": "<span style='font-size:12px'>Energiaa <b>[[value]]</b> kJ</span>",
-      "fillAlphas": 0,
-      "type": "line",
-      "color": "green",
-      "lineColor": "green",
-      "lineThickness": 3,
-      "lineAlpha": 0.8,
-      "bullet": "square",
-      "bulletColor": "#4a4",
-      "bulletAlpha": 0.8,
-      "bulletBorderThickness": 2,
-      "bulletSize": 10,
-      "bulletBorderAlpha": 1,
-      "useLineColorForBulletBorder": true,
-      //            "hideBulletsCount": 60,
-      "title": "Energia",
-      "valueField": "energy",
-      //            "fillAlphas": 0.6
-    } */],
+    }],
     "chartScrollbar": { "enabled": false },
     "chartCursor": {
       "cursorPosition": "middle",
