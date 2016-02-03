@@ -228,6 +228,19 @@
     )
   )
 
+(defn api-get-nutrition-categories [{:keys [params]}]
+  (let [id (if (:id params)
+             (:id params)
+             "%")
+        response (db/get-nutrition-by-categories {:email id})
+        status (if (empty? response) 404 200)]
+    {:status status
+     :headers {"Content-Type" "text/html; charset=utf-8"}
+     :body response
+     }
+    )
+  )
+
 (defn api-get-purchase-tops [{:keys [params]}]
   (let [id (if (:id params)
              (:id params)
@@ -302,5 +315,6 @@
   (GET "/api/nutrition/:id/week" request (api-get-nutrition request "w"))
   (GET "/api/nutrition/:id/date/:month/:order" request (api-get-nutrition-by-date request))
   (GET "/api/nutrition/:id/total" request (api-get-nutrition-total request))
+  (GET "/api/nutrition/:id/categories" request (api-get-nutrition-categories request))
   )
 

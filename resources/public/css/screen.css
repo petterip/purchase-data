@@ -68,6 +68,13 @@ form, .error {
 	height	: 500px;
 }
 
+#chartwrapper {
+  top: -10px;
+  position: relative;
+  //overflow:hidden;
+  height:470px;
+}
+
 #infodiv, #topdiv {
   font: 11px "Verdana";
   padding-left: 65px;

@@ -69,6 +69,9 @@
               <li {% ifequal page "nutrition-area.html" %} class="active"{%endifequal%}>
                 <a class="secret" href="{{servlet-context}}/nutrition-area">Ravinto-B</a>
               </li>
+              <li {% ifequal page "nutrition-total.html" %} class="active"{%endifequal%}>
+                <a class="secret" href="{{servlet-context}}/nutrition-total">Ravinto-C</a>
+              </li>
               <!--
 <li {% ifequal page "about.html" %} class="active"{%endifequal%}>
 <a href="{{servlet-context}}/about">About</a>
@@ -103,6 +106,7 @@
 
     {% script "http://www.amcharts.com/lib/3/amcharts.js" %}
     {% script "http://www.amcharts.com/lib/3/serial.js" %}
+    {% script "http://www.amcharts.com/lib/3/pie.js" %}
     {% script "http://www.amcharts.com/lib/3/themes/light.js" %}
     {% script "/js/dataloader.min.js" %}
 
