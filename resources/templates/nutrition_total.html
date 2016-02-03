@@ -1,0 +1,341 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="files span12">
+    <div id="chartwrapper">
+      <div id="chartdiv"></div>
+    </div>
+      <div id="info">
+        <div id="instructions"><!-- <em>Klikkaa kaaviossa nähdäksesi tarkemmat ravintotiedot kyseiseltä kuukaudelta.<br/> </em> --></div>
+        <div class="col-md-15" id="panel1"></div>
+        <div class="col-md-15" id="panel2"></div>
+        <div class="col-md-15" id="panel3"></div>
+        <div class="col-md-15" id="panel4"></div>
+        <div class="col-md-15" id="panel5"></div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+{% block page-scripts %}
+<script type="text/javascript">
+  var secret = atob(getURLParameter('secret'));
+  var id = secret ? secret : "id1";
+  var chart;
+  var legend;
+  var selected;
+
+  var types = [{
+    type: "Rasva",
+    field: "fat",
+    percent: 70,
+    color: "#67b7dc",
+    subs: []
+  }, {
+    type: "Huonot rasvat",
+    field: "fat_saturated",
+    percent: 70,
+    color: "#cc0",
+    subs: []
+  }, {
+    type: "Hiilihydraatit",
+    field: "carb",
+    percent: 70,
+    color: "#84b761",
+    subs: []
+  }, {
+    type: "Kuidut",
+    field: "fiber",
+    percent: 70,
+    color: "#cc4748",
+    subs: []
+  }, {
+    type: "Proteiini",
+    field: "prot",
+    percent: 70,
+    color: "#2f4074",
+    subs: []
+  }, {
+    type: "Sokeri",
+    field: "sugar",
+    percent: 70,
+    color: "#cd82ad",
+    subs: []
+  }
+              ];
+
+  function generateChartData () {
+    var chartData = [];
+
+    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi"+"/categories", function( data ) {
+      for (var i = 0; i < types.length; i++) {
+
+        chartData.push({
+          type: types[i].type,
+          percent: getSumOfValues(data, types[i].field)/1000,   //types[i].percent,
+          color: types[i].color,
+          id: i
+        });
+
+      }
+      writeTotals(data);
+      console.log(data);
+      console.log(chartData);
+      chart.dataProvider = chartData;
+      chart.validateData();
+    });
+
+  }
+
+  function getSumOfValues( data, cat )
+  {
+    var sum = 0;
+
+    for(var i = 0; i < data.length; i++) {
+      sum += data[i][cat];
+    }
+    return sum;
+  }
+
+  AmCharts.ready(function() {
+    // PIE CHART
+    chart = new AmCharts.AmPieChart();
+    chart.theme = "light";
+    chart.titleField = "type";
+    chart.valueField = "percent";
+    chart.labelText = "[[title]]: [[value]] kg";
+    chart.balloonText = "[[title]]: [[percents]]%";
+    chart.precision = 1;
+    //chart.outlineColor = "#FFFFFF";
+    chart.outlineAlpha = 0.8;
+    chart.outlineThickness = 2;
+    chart.colorField = "color";
+    chart.pulledField = "pulled";
+    chart.marginTop = chart.marginBottom = -70;
+
+    chart.path = "http://www.amcharts.com/lib/3/";
+
+    // ADD TITLE
+    chart.addTitle("Kaikki 16 kuukauden ostokset ravintoarvoittain");
+
+    // WRITE
+    generateChartData();
+    chart.write("chartdiv");
+  });
+
+  function showTotals() {
+    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi"+"/total", function( data ) {
+      var total = data[0];
+      var days = total.days;
+      var subjective_consumption = { "id1":1870,"id2":3269,"id3":2000,"id4":2969,"id5":2117,"id6":2797,"id7":3058,"id8":2157 };
+      var energy_consumption = subjective_consumption[id];
+
+      $("#panel1").empty();
+      $("#panel2").empty();
+      $("#panel3").empty();
+      $("#panel4").empty();
+      $("#panel5").empty();
+
+      $("<p>Ostosten ravintoarvot jaettuna per päivä (" + total.days + " päivää)</p>").appendTo("#instructions");
+
+      $("<span>Rasva:	" + totalString(total.fat/days, energy_consumption*0.25/9, energy_consumption*0.4/9, "g/pv") +
+        "Huono rasva: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
+
+      $("<span>Hiilihydraatit: " + totalString(total.carb/days, energy_consumption*0.45/4, energy_consumption*0.60/4, "g/pv")).appendTo("#panel2");
+
+      $("<span>Kuidut: " + totalString(total.fiber/days, 25, 35, "g/pv") +
+        "Proteiinit: " + totalString(total.prot/days, energy_consumption*0.1/4, energy_consumption*0.2/4, "g/pv")).appendTo("#panel3");
+
+      $("<span>Sokeri: " + totalString(total.sugar/days, 0, energy_consumption*0.1/2, "g/pv")).appendTo("#panel4");
+
+      $("<span>Hinta: " + totalString(total.price/days, 0, 0, "€/pv" ) +
+        "Paino: " + totalString(total.weight/days, 0, 0, "g/pv")).appendTo("#panel5");
+
+      $("<a/>" , { href: "#", html: ">> Palaa" }).on("click", generateChartData).appendTo("#panel5");
+    });
+  }
+
+  function totalString( value, min, max, unit ) {
+    var value_rounded;
+
+    if (value < 2)
+      value_rounded = Math.round(value*10)/10;
+    else
+      value_rounded = Math.round(value);
+
+    if (max)
+      return "<span class='" + (value < min ? "yellow" : value < max ? "green" : "red") + "'>" + value_rounded + " " + unit + "</span><br/>(suositus " + Math.round(min) + "-" + Math.round(max) + " " + unit + ")<br/><br/>";
+    else
+      return "<strong>" + value_rounded + " " + unit + "</strong><br/><br/>";
+
+  }
+
+  function writeTotals(data)
+  {
+    function roundUp(v) {
+      return Math.round(v/1000*10)/10;
+    }
+    var items = [];
+
+    // fat
+    $.each( sortJsonField(data, "fat"), function( index, elem ) {
+      if(elem.fat > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.fat+"'>" + roundUp(elem.fat) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $("#instructions").empty();
+    $("#panel1").empty();
+
+    $( "<p>Rasvaisimmat ostokset:</p>" ).appendTo("#panel1");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel1" );
+
+    // fat_saturated
+    items = [];
+    $.each( sortJsonField(data, "fat_saturated"), function( index, elem ) {
+      if(elem.fat_saturated > 0)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.fat+"'>" + (elem.fat_saturated) + "&nbsp;g</td>" +
+                   "</tr>" );
+    });
+
+    $( "<p style='color:#cc0'>Huonoa rasvaa:</p>" ).appendTo("#panel1");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel1" );
+
+    // carb
+    items = [];
+    $.each( sortJsonField(data, "carb"), function( index, elem ) {
+      if(elem.carb > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.carb+"'>" + roundUp(elem.carb) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $("#panel2").empty();
+
+    $( "<p>Eniten hiilihydraatteja:</p>" ).appendTo("#panel2");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel2" );
+
+    // fiber
+    items = [];
+    $.each( sortJsonField(data, "fiber"), function( index, elem ) {
+      if(elem.fiber > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.fiber+"'>" + roundUp(elem.fiber) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $("#panel3").empty();
+
+    $( "<p>Eniten kuituja:</p>" ).appendTo("#panel3");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel3" );
+
+    // prot
+    items = [];
+    $.each( sortJsonField(data, "prot"), function( index, elem ) {
+      if(elem.prot > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.prot+"'>" + roundUp(elem.prot) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $( "<p style='color:#2f4074'>Eniten proteiineja:</p>" ).appendTo("#panel3");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel3" );
+
+    // sugar
+    items = [];
+    $.each( sortJsonField(data, "sugar"), function( index, elem ) {
+      if(elem.sugar > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.sugar+"'>" + roundUp(elem.sugar) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $("#panel4").empty();
+
+    $( "<p>Sokerisimmat:</p>" ).appendTo("#panel4");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel4" );
+
+    // energy
+    $.each( sortJsonField(data, "energy"), function( index, elem ) {
+      if(elem.energy > 99)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.energy+"'>" + roundUp(elem.energy) + "&nbsp;kg</td>" +
+                   "</tr>" );
+    });
+
+    $( "<p style='color:darkcyan'>Eniten energiaa:</p>" ).appendTo("#panel4");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel4" );
+
+    // price
+    items = [];
+    $.each( sortJsonField(data, "price"), function( index, elem ) {
+      if(elem.price > 0)
+        items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                   "<td style='text-align:right' class='"+elem.price+"'>" + elem.price + "&nbsp;€</td>" +
+                   "</tr>" );
+    });
+
+    $("#panel5").empty();
+
+    $( "<p>Hintavimmat:</p>" ).appendTo("#panel5");
+    $( "<table/>", {
+      "class": "table",
+      html: items.join( "" )
+    }).appendTo( "#panel5" );
+
+    $("<a/>" , { href: "#", html: ">> Näytä kaikki arvot" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+    $("<br/>").appendTo("#panel5");
+    $("<a/>" , { href: "#", html: ">> Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
+
+    $("#info tr").hide();
+    $("#info tr:nth-child(-n+5)").show();
+  }
+
+  $.date = function(dateObject) {
+    var d = new Date(dateObject);
+    var day = d.getDate();
+    var month = d.getMonth() + 1;
+    var year = d.getFullYear();
+    var date = day + "." + month + "." + year;
+
+    return date;
+  };
+
+  function sortJsonField(json, field) {
+    json.sort(function (a,b) {
+      return a[field] > b[field] ? -1 : 1;
+    });
+    return json;
+  }
+
+  $(document).ready(function() {
+    setTimeout(function(){
+      $( "a:contains('JS chart')" ).fadeOut();
+    }, 400);
+  } );
+
+</script>
+
+{% endblock %}
