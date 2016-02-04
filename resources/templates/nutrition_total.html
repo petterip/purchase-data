@@ -34,7 +34,7 @@
     type: "Huonot rasvat",
     field: "fat_saturated",
     percent: 70,
-    color: "#cc0",
+    color: "orange",
     subs: []
   }, {
     type: "Hiilihydraatit",
@@ -105,6 +105,7 @@
     chart.labelText = "[[title]]: [[value]] kg";
     chart.balloonText = "[[title]]: [[percents]]%";
     chart.precision = 1;
+    chart.percentFormatter = {precision:1};
     //chart.outlineColor = "#FFFFFF";
     chart.outlineAlpha = 0.8;
     chart.outlineThickness = 2;
@@ -114,12 +115,14 @@
 
     chart.path = "http://www.amcharts.com/lib/3/";
 
-    // ADD TITLE
-    chart.addTitle("Kaikki 16 kuukauden ostokset ravintoarvoittain");
+    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi"+"/total", function( data ) {
+      // ADD TITLE
+      chart.addTitle("Kaikki "+Math.round(data[0].days/30)+" kuukauden ostokset ravintoarvoittain");
 
-    // WRITE
-    generateChartData();
-    chart.write("chartdiv");
+      // WRITE
+      generateChartData();
+      chart.write("chartdiv");
+    });
   });
 
   function showTotals() {
@@ -202,11 +205,12 @@
                    "</tr>" );
     });
 
-    $( "<p style='color:#cc0'>Huonoa rasvaa:</p>" ).appendTo("#panel1");
+    $( "<p style='color:orange'>Huonoa rasvaa*:</p>" ).appendTo("#panel1");
     $( "<table/>", {
       "class": "table",
       html: items.join( "" )
     }).appendTo( "#panel1" );
+    $( "<br/><span style='color:orange'>*) tyydyttyneitä rasvahappoja</span>" ).appendTo("#panel1");
 
     // carb
     items = [];

@@ -295,11 +295,12 @@
                      "</tr>" );
       });
 
-      $( "<p style='color:#c00'>Huonoa rasvaa:</p>" ).appendTo("#panel1");
+      $( "<p style='color:orange'>Huonoa rasvaa*:</p>" ).appendTo("#panel1");
       $( "<table/>", {
         "class": "table",
         html: items.join( "" )
       }).appendTo( "#panel1" );
+      $( "<br/><span style='color:orange'>*) tyydyttyneitä rasvahappoja</span>" ).appendTo("#panel1");
 
       // carb
       items = [];

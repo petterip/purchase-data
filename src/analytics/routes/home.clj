@@ -20,9 +20,9 @@
 ;; Load page
 (defn load-page [{:keys [flash]}]
   (layout/render
-   "load.html"
-   (merge {:files (db/get-latest-files)}
-          (select-keys flash [:email :file :message :errors]))))
+    "load.html"
+    (merge {:files (db/get-latest-files)}
+           (select-keys flash [:email :file :message :errors]))))
 
 (defn validate-file [params]
   (first
@@ -51,49 +51,55 @@
           (io/copy (file :tempfile) filepath)
           (db/store-file!
             (assoc params :timestamp (java.util.Date.)
-                          :email email
-                          :fname filename
-                          :date date
-                          :store "n/a"
-                          :type extension))
+              :email email
+              :fname filename
+              :date date
+              :store "n/a"
+              :type extension))
           (cond
             (.endsWith (s/lower-case filename) ".csv")
-                       ;; Store csv files as S-Group's purchase reports into database
-                       (dbt/db-store-csv email filepath)
+            ;; Store csv files as S-Group's purchase reports into database
+            (dbt/db-store-csv email filepath)
             (.endsWith (s/lower-case filename) ".jpg")
-                       ;; Store receipts into database
-                       (let [text-file
-                             ;; Use OCR and Dice coefficient fuzzy matching to recognize text
-                             (r/call-ocrsdk filepath)]
-                         (if (not (nil? text-file))
-                           ;; Read the recognized text file into database
-                           (do
-                             (db/store-file!
-                               (assoc params :timestamp (java.util.Date.)
-                                 :email email
-                                 :fname text-file
-                                 :date date
-                                 :store "n/a"
-                                 :type "txt"))
-                             (r/read-text-file text-file email date)
-                             (println "Receipt text recognized and products stored into database.")))
-                         )
+            ;; Store receipts into database
+            (let [text-file
+                  ;; Use OCR and Dice coefficient fuzzy matching to recognize text
+                  (r/call-ocrsdk filepath)]
+              (if (not (nil? text-file))
+                ;; Read the recognized text file into database
+                (do
+                  (db/store-file!
+                    (assoc params :timestamp (java.util.Date.)
+                      :email email
+                      :fname text-file
+                      :date date
+                      :store "n/a"
+                      :type "txt"))
+                  (r/read-text-file text-file email date)
+                  (println "Receipt text recognized and products stored into database.")))
+              )
             (.endsWith (s/lower-case filename) ".txt")
-                       ;; Read the recognized text file into database
-                       (do
-                         (r/read-text-file filepath email date)
-                         (println "Products stored into database.")
-                         )
+            ;; Read the recognized text file into database
+            (do
+              (r/read-text-file filepath email date)
+              (println "Products stored into database.")
+              )
             )
           (redirect "/"))))))
 
 ;; Purchases page
-(defn purchases-page [{:keys [flash]}]
-  (layout/render
-   "purchases.html"
-   (merge {:files (db/get-files-with-visits)}
-          {:purchases (db/get-purchases {:email "%"})}
-          (select-keys flash [:errors]))))
+(defn purchases-page [request]
+  (let [flash (:keys request)
+        query (:query-params request)
+        secret (second (first query))
+        id (if (nil? secret)
+             "%"
+             (str (String. (b64/decode (.getBytes secret))) "@ostosdata.oulu.fi"))]
+    (layout/render
+      "purchases.html"
+      (merge {:files (db/get-files-with-visits)}
+             {:purchases (db/get-purchases {:email id})}
+             (select-keys flash [:errors])))))
 
 ;; Items page
 (defn items-page [request]
@@ -103,26 +109,18 @@
         id (if (nil? secret)
              "%"
              (str (String. (b64/decode (.getBytes secret))) "@ostosdata.oulu.fi"))]
-    (println "secret=" secret)
-    (println "q=" query)
-    (println "id=" id)
     (layout/render
       "items.html"
       (merge {:files (db/get-files-of-type {:type "txt"})}
              {:items (db/get-items {:email id})}
              (select-keys flash [:errors])))))
 
-(def query {"secret" "asf"})
-(println (second (first nil)))
-(:secret query)
-(str "asd" "dafdsf")
-
 ;; Home page
 (defn home-page [{:keys [flash]}]
   (layout/render
-   "home.html"
-   (merge {:messages (db/get-messages)}
-          (select-keys flash [:name :message :errors]))))
+    "home.html"
+    (merge {:messages (db/get-messages)}
+           (select-keys flash [:name :message :errors]))))
 
 (defn validate-message [params]
   (first
@@ -137,7 +135,7 @@
         (assoc :flash (assoc params :errors errors)))
     (do
       (db/save-message!
-       (assoc params :timestamp (java.util.Date.)))
+        (assoc params :timestamp (java.util.Date.)))
       (redirect "/"))))
 
 (defn api-get-purchases [{:keys [params]}]
@@ -202,8 +200,8 @@
              "%")
         month (:month params)
         order (if (:order params)
-             (:order params)
-             "fat")
+                (:order params)
+                "fat")
         response (db/get-nutrition-by-date {:email id :month month :order order})
         status (if (empty? response) 404 200)]
     {:status status
@@ -212,8 +210,6 @@
      }
     )
   )
-
-;(sort-by (keyword "fat") > (db/get-nutrition-by-date {:email "id1@ostosdata.oulu.fi" :month "08-2014" :order ""}))
 
 (defn api-get-purchase-totals [{:keys [params]}]
   (let [id (if (:id params)
@@ -285,12 +281,8 @@
   (layout/render "about.html"))
 
 (defroutes home-routes
-  ;(GET "/" request (home-page request))
-  ;(POST "/" request (save-message! request))
 
-  ;(GET "/load" request (load-page request))
-  ;(POST "/load" request (load-file! request))
-
+  ; Routes for the HTML pages
   (GET "/" request (load-page request))
   (POST "/" request (load-file! request))
 
