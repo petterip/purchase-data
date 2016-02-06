@@ -68,11 +68,8 @@
               (println "Trying to find store:" line)
               (let [close-stores (keep (fuzzy-store line 0.4) ((:message stores-json) :stores))]
                 (if (not (empty? close-stores))
-                  (do
-                    (println "Close-stores: " close-stores)
-                    (let [closest (apply max-key first close-stores)]
+                  (let [closest (apply max-key first close-stores)]
                       [(get closest 1) (get closest 0)])
-                    )
                   (do
                       (println "No store match")
                       ["" 0])
@@ -99,18 +96,10 @@
       entry)))
 
 ; DELETE THESE
-;(float (* 2.5 (bigdec "3")))
-;(float (read-string "2.5"))
-;(read-text-file "src/results_30.9.txt" "sadf@asdf" "2015-11-22")
-;(def line "   7 YTVAITO          60                    2.92        ")
-;(def line "   «»..m»»    w*l t                       13.92       ")
-;(def line "p/tmm 3X85G                      0.85 ")
-;(def line " MARGARIINI 60%                           1.09")
 ;(def line "RUISRUB 3 KPL 1-69   ")
-(def line "OMENA    5.57")
-(re-find #"(.{10,37})\s{1,}(\d+.*)" (str line))
-(mapv clojure.string/trim (re-find #"(.{8,37})\s{1,}(\d+.*)" (str line)))
-
+;(def line "OMENA    5.57")
+;(re-find #"(.{10,37})\s{1,}(\d+.*)" (str line))
+;(mapv clojure.string/trim (re-find #"(.{8,37})\s{1,}(\d+.*)" (str line)))
 ;(re-find #"(\D+) ([\d\.]+)" line)
 
 (defn read-text-file [text-file email date]
