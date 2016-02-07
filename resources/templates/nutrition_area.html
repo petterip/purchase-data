@@ -22,14 +22,15 @@
     "type": "serial",
     "theme": "light",
     "legend": {
-      //"useGraphSettings": true,
-      "valueText": "[[value]]",
-      "markerSize": 10,
-      "valueWidth": 40
+      "valueText": "[[percents]]",
+      "valueFunction": formatLegendValue,
+      "precision": 1,
+      "markerBorderColor": "#000",
+      "markerBorderAlpha": 0.1,
+      "valueWidth": 27
     },
     "numberFormatter": {
       "precision": 0,
-      "decimalSeparator": ",",
       "thousandsSeparator": ""
    },
     "balloon": {
@@ -101,8 +102,7 @@
       "fillAlphas": 0.8,
       "type": "line",
       "color": "orange",
-
-      "title": "Hyvät rasvat", // Rasva (tyydyttymättömät)
+      "title": "Hyvät rasvat*", // Rasva (tyydyttymättömät)
       "valueField": "fat"
     }, {
       "valueAxis": "v1",
@@ -111,6 +111,7 @@
       "type": "line",
       "columnWidth": 0.9,
       "color": "red",
+      "title": "Huonot rasvat*", // Rasva (tyydyttymättömät)
       "valueField": "fat_saturated"
     }, {
       "valueAxis": "v1",
@@ -210,7 +211,7 @@
     $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi"+"/total", function( data ) {
       var total = data[0];
       var days = total.days;
-      var subjective_consumption = { "id1":1870,"id2":3269,"id3":2000,"id4":2969,"id5":2117,"id6":2797,"id7":3058,"id8":2157 };
+      var subjective_consumption = { "id1":1870,"id2":3269,"id3":2000+2969,"id4":2000+2969,"id5":2117,"id6":2797,"id7":3058,"id8":2157 };
       var energy_consumption = subjective_consumption[id];
 
       $("#panel1").empty();
@@ -221,8 +222,9 @@
 
       $("<p>Ostosten ravintoarvot jaettuna per päivä (" + total.days + " päivää)</p>").appendTo("#instructions");
 
-      $("<span>Rasva:	" + totalString(total.fat/days, energy_consumption*0.25/9, energy_consumption*0.4/9, "g/pv") +
-              "Huono rasva: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
+      $("<span>Rasvat:	" + totalString(total.fat/days, energy_consumption*0.25/9, energy_consumption*0.4/9, "g/pv") +
+              "Huonot rasvat*: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
+      $( "<span><br/>*) Hyvät rasvat sisältävät tyydyt&shy;tymättömät rasvahapot ja huonot tyydyttyneet rasvat.</span>").appendTo("#panel1");
 
       $("<span>Hiilihydraatit: " + totalString(total.carb/days, energy_consumption*0.45/4, energy_consumption*0.60/4, "g/pv")).appendTo("#panel2");
 
@@ -263,8 +265,8 @@
   {
     var i = chart.chartCursor.index;
     var clickedDate = chart.categoryAxis.data[i].dataContext.month;
-    var clickedDate2 = chart.categoryAxis.data[i].dataContext.date;
-    var category = clickedDate2.replace("<br>", " ").toLowerCase();
+    var dateCategory = chart.categoryAxis.data[i].dataContext.date;
+    var category = dateCategory.replace("<br>", " ").toLowerCase();
 
     $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fiber", function( data ) {
       var items = [];
@@ -300,7 +302,7 @@
         "class": "table",
         html: items.join( "" )
       }).appendTo( "#panel1" );
-      $( "<br/><span style='color:orange'>*) tyydyttyneitä rasvahappoja</span>" ).appendTo("#panel1");
+      $( "<span><br/>*) Hyvät rasvat sisältävät tyydyt&shy;tymättömät rasvahapot ja huonot tyydyttyneet rasvat.</span>").appendTo("#panel1");
 
       // carb
       items = [];
@@ -418,6 +420,19 @@
 
     return date;
   };
+
+  function formatLegendValue(graphDataItem, valueString){
+    var value = Number(valueString);
+
+    if(value == 0 || value == 100)
+      valueString = "";
+    else if(value < 1)
+      valueString = Math.round(value*10)/10 + "%";
+    else
+      valueString = Math.round(value) + "%";
+
+    return valueString;
+  }
 
   function sortJsonField(json, field) {
     json.sort(function (a,b) {
