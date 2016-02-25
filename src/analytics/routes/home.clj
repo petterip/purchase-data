@@ -93,7 +93,7 @@
         query (:query-params request)
         secret (second (first query))
         id (if (nil? secret)
-             "%"
+             "id0%"
              (str (String. (b64/decode (.getBytes secret))) "@ostosdata.oulu.fi"))]
     (layout/render
       "purchases.html"
@@ -107,7 +107,7 @@
         query (:query-params request)
         secret (second (first query))
         id (if (nil? secret)
-             "%"
+             "id0%"
              (str (String. (b64/decode (.getBytes secret))) "@ostosdata.oulu.fi"))]
     (layout/render
       "items.html"
@@ -276,6 +276,9 @@
 (defn nutrition-total-page []
   (layout/render "nutrition_total.html"))
 
+(defn probe-t1-page []
+  (layout/render "probe_t1.html"))
+
 ;; About page
 (defn about-page []
   (layout/render "about.html"))
@@ -292,6 +295,7 @@
   (GET "/nutrition" [] (nutrition-page))
   (GET "/nutrition-area" [] (nutrition-area-page))
   (GET "/nutrition-total" [] (nutrition-total-page))
+  (GET "/probe-t1" [] (probe-t1-page))
   (GET "/about" [] (about-page))
 
   ; API routes

@@ -1,271 +1,274 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row">
-    <div class="files span12">
-        <div id="chartdiv"></div>
-        <div id="infodiv"><em>Klikkaa kaaviossa päivämäärän kohdalla, saat siten tarkemmat ostostietosi kyseiseltä päivältä.</em></div>
-        <div id="topdiv"></div>
+  <div class="files span12">
+    <div id="chartdiv"></div>
+    <div id="info">
+      <div class="col-md-4" id="infodiv"><em>Klikkaa kaaviossa päivämäärän kohdalla, saat siten tarkemmat ostostietosi kyseiseltä päivältä.</em></div>
+      <div class="col-md-4" id="topdiv-1"></div>
+      <div class="col-md-4" id="topdiv-2"></div>
     </div>
+  </div>
 </div>
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-    var secret = atob(getURLParameter('secret'));
-    var id = secret ? secret : "id1";
-    var chart = AmCharts.makeChart("chartdiv", {
-        "type": "serial",
-        "theme": "light",
-        "legend": {
-            "useGraphSettings": true
-        },
-        "dataLoader": {
-            "url": "/api/purchases/"+id+"@ostosdata.oulu.fi/totals",
-            "format": "json",
-            "showErrors": true
-        },
-        "postProcess": postProcess,
-//        "dataProvider": chartData,
-        "dataProvider": [],
-        "valueAxes": [{
-            "id":"v1",
-            "axisColor": "green",
-            "axisThickness": 2,
-            "gridAlpha": 0,
-            "axisAlpha": 1,
-            "position": "left",
-            "title": "euroa",
-            "gridCount": 10,
-            "autoGridCount": false,
-            "minimum": 0,
-            "maximum": (id == "id7" ? 50 : (id == "id5" ? 120 : 70)),
-            "strictMinMax": true
-        }, {
-            "id":"v2",
-            "axisColor": "blue",
-            "axisThickness": 2,
-            "gridAlpha": 0,
-            "axisAlpha": 1,
-            "position": "right",
-            "title": "Titteli 2"
-        }, {
-            "id":"v3",
-            "axisColor": "light grey",
-            "axisThickness": 2,
-            "gridAlpha": 0,
-            "offset": 50,
-            "axisAlpha": 1,
-            "position": "left",
-            "title": "Titteli 3"
-        }],
-        "graphs": [{
-            "valueAxis": "v1",
-            "balloonText": "<span style='font-size:12px; color:green;'>Ruoka- ja juoma <b>[[value]] €</b></span>",
-            "fillAlphas": 0.6,
-            "lineColor": "green",
-            "bullet": "round",
-            "bulletBorderThickness": 1,
-            "hideBulletsCount": 30,
-            "title": "Ruoka- ja juomaostokset",
-            "valueField": "food_cost",
-            "fillAlphas": 0.6
-        }, {
-            "valueAxis": "v1",
-            "balloonText": "<span style='font-size:12px; color:blue;'>Käyttötavarat <b>[[value]] €</b></span>",
-            "lineColor": "blue",
-            "bullet": "square",
-            "bulletBorderThickness": 1,
-            "hideBulletsCount": 30,
-            "title": "Käyttötavarat",
-            "valueField": "other_cost",
-            "fillAlphas": 0.6
-        }, {
-            "valueAxis": "v1",
-            "balloonText": "<span style='font-size:12px; color:#555;'>Ostokset yhteensä <b>[[value]] €</b></span>",
-            "lineColor": "grey",
-            "bullet": "triangleUp",
-            "bulletBorderThickness": 1,
-            "hideBulletsCount": 30,
-            "title": "Päivän ostosten kokonaishinta",
-            "valueField": "total_cost",
-            "fillAlphas": 0.3
-        }],
-        "chartScrollbar": {},
-        "chartCursor": {
-            "cursorPosition": "mouse"
-        },
-        "categoryField": "date",
-        "categoryAxis": {
-            "parseDates": true,
-            "axisColor": "#DADADA",
-            "minorGridEnabled": true,
-/*            "guides": [{
-                date: "Oct 10, 2015",
-                toDate: "Dec 10, 2015",
-                lineColor: "#CC0000",
-                lineAlpha: 1,
-                fillAlpha: 0.2,
-                fillColor: "#CC0000",
-                dashLength: 2,
-                inside: true,
-                labelRotation: 90,
-
-                label: "kuitteihin perustuva data"
-            }]
-*/        },
-        "export": {
-            "enabled": true,
-            "position": "bottom-right"
+  var secret = getURLParameter('secret');
+  var id = (secret != null) ? atob(secret) : "id0";
+  var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "light",
+    "legend": {
+      "valueText": "[[value]] €",
+      "precision": 1,
+      "markerBorderColor": "#000",
+      "markerBorderAlpha": 0.1,
+      "valueWidth": 50
+    },
+    "dataLoader": {
+      "url": "/api/purchases/"+id+"@ostosdata.oulu.fi/totals",
+      "format": "json",
+      "showErrors": true,
+      "postProcess": function(data, options) {
+        var months_fi = [ "Tammi","Helmi","Maalis","Huhti","Touko","Kesä","Heinä","Elo","Syys","Loka","Marras","Joulu" ];
+        if (data === null) {
+          data = [];
+          options.chart.addLabel("50%", "50%", "Ei ostostietoja esitettäväksi");
         }
-    });
+        else
+        {
+          for (i = 0; i<data.length; ++i) {
+            var d = new Date(data[i].date);
+            data[i].realDate = data[i].date;
+            data[i].date = d.getDate() + "." + (d.getMonth()+1) + ".<br>" + d.getFullYear();
+          }
+        }
+        return data;
+      }
+    },
+    "dataProvider": [],
+    "valueAxes": [{
+      "id":"v1",
+      "axisColor": "green",
+      "axisThickness": 2,
+      "gridAlpha": 0,
+      "axisAlpha": 1,
+      "position": "left",
+      "title": "euroa",
+      "gridCount": 10,
+      "autoGridCount": false,
+      "minimum": 0,
+      "maximum": (id == "id7" ? 50 : (id == "id5" ? 120 : 70)),
+      "strictMinMax": true
+    }, {
+      "id":"v2",
+      "axisColor": "blue",
+      "axisThickness": 2,
+      "gridAlpha": 0,
+      "axisAlpha": 1,
+      "position": "right",
+      "title": "Titteli 2"
+    }, {
+      "id":"v3",
+      "axisColor": "light grey",
+      "axisThickness": 2,
+      "gridAlpha": 0,
+      "offset": 50,
+      "axisAlpha": 1,
+      "position": "left",
+      "title": "Titteli 3"
+    }],
+    "graphs": [{
+      "valueAxis": "v1",
+      "balloonText": "<span style='font-size:12px; color:green;'>Ruoka- ja juoma <b>[[value]] €</b></span>",
+      "fillAlphas": 0.6,
+      "lineColor": "green",
+      "bullet": "round",
+      "bulletColor": "#6b6",
 
-    chart.addListener("dataUpdated", zoomChart);
-    chart.addListener("clickGraphItem", clickGraphItem);
-    chart.addListener("clickGraph", clickGraph);
-    chart.addListener("drawn", graphDrawn);
-    zoomChart();
+      "lineThickness": 2,
+      "bulletAlpha": 0.8,
+      "bulletBorderThickness": 1,
+      "bulletSize": 10,
+      "bulletBorderAlpha": 1,
+      "useLineColorForBulletBorder": true,
 
-    function postProcess(chartData, config) {
-alert("Got " + chartData.length);
-return chartData;
-}
-    function graphDrawn(e) {
-        if(e.chart.endDate) {
-            console.log("Redrawn!");
-            console.log(e.chart);
-            console.log("date " + e.chart.endDate);
+      "hideBulletsCount": 30,
+      "title": "Ruoka- ja juomaostokset",
+      "valueField": "food_cost",
+      "fillAlphas": 0.6
+    }, {
+      "valueAxis": "v1",
+      "balloonText": "<span style='font-size:12px; color:blue;'>Käyttötavarat <b>[[value]] €</b></span>",
+      "lineColor": "blue",
+      "bullet": "square",
+      "bulletColor": "#88f",
 
-        $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/top5", function( data ) {
-            var items = [];
-            var i = 1;
-            $.each( data, function( index, elem ) {
+      "lineThickness": 2,
+      "bulletAlpha": 0.8,
+      "bulletBorderThickness": 1,
+      "bulletSize": 10,
+      "bulletBorderAlpha": 1,
+      "useLineColorForBulletBorder": true,
 
-                items.push( "<tr><td>" + i++ + ". " + elem.category + "</td>" +
-                            "<td>" + elem.total + " eur</td>" +
-                            "</tr>" );
-            });
 
-	    console.log("Empty topdiv");
-            $("#topdiv").empty();
-            $( "<p>TOP tuotteet</p>" ).appendTo("#topdiv");
-            $( "<table/>", {
-                "class": "table",
-                html: items.join( "" )
-            }).appendTo( "#topdiv" );
+      "hideBulletsCount": 30,
+      "title": "Käyttötavarat",
+      "valueField": "other_cost",
+      "fillAlphas": 0.6
+    }, {
+      "valueAxis": "v1",
+      "balloonText": "<span style='font-size:12px; color:#555;'>Ostokset yhteensä <b>[[value]] €</b></span>",
+      "lineColor": "grey",
+      "bullet": "triangleUp",
+      "bulletColor": "#ddd",
+
+      "lineThickness": 2,
+      "bulletAlpha": 0.8,
+      "bulletBorderThickness": 1,
+      "bulletSize": 10,
+      "bulletBorderAlpha": 1,
+      "useLineColorForBulletBorder": true,
+
+      "hideBulletsCount": 30,
+      "title": "Päivän ostosten kokonaishinta",
+      "valueField": "total_cost",
+      "fillAlphas": 0.3
+    }],
+    "chartScrollbar": { "enabled": true },
+    "chartCursor": {
+      "cursorPosition": "middle",
+      "cursorAlpha": 0.2,
+      //"valueLineEnabled": false,
+      "leaveAfterTouch": true
+    },
+    "categoryField": "date",
+    "categoryAxis": {
+      "parseDates": false,
+      "axisColor": "#eee",
+      "minorGridEnabled": true,
+    },
+    "export": {
+      "enabled": true,
+      "position": "bottom-right"
+    }
+  });
+
+  chart.addListener("dataUpdated", zoomChart);
+  chart.addListener("clickGraphItem", clickGraphItem);
+  chart.addListener("clickGraph", clickGraph);
+  chart.addListener("drawn", graphDrawn);
+  chart.addListener("rendered", graphDrawn);
+  $("#chartdiv").on("click", clickGraphItem);
+  zoomChart();
+
+  function graphDrawn(e) {
+    $( "tspan:contains('Show all')" ).text("Näytä kaikki");
+    if(e.type == "rendered") {
+      $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/top5", function( data ) {
+        var items = [];
+        var i = 1;
+        $.each( data, function( index, elem ) {
+
+          items.push( "<tr><td>" + i++ + ". " + elem.category + "</td>" +
+                     "<td>" + elem.total + " eur</td>" +
+                     "</tr>" );
+        });
+
+        console.log("Empty topdiv");
+        $("#topdiv-1").empty();
+        $( "<p>TOP tuotteet</p>" ).appendTo("#topdiv-1");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#topdiv-1" );
 
         $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/top5-count", function( data ) {
-            var items = [];
-            var i = 1;
-            $.each( data, function( index, elem ) {
+          var items = [];
+          var i = 1;
+          $.each( data, function( index, elem ) {
 
-                items.push( "<tr><td>" + i++ + ". " + elem.category + "</td>" +
-                            "<td>" + elem.count + " kertaa</td>" +
-                            "</tr>" );
-            });
+            items.push( "<tr><td>" + i++ + ". " + elem.category + "</td>" +
+                       "<td>" + elem.count + " kertaa</td>" +
+                       "</tr>" );
+          });
 
-            console.log("Appending to topdiv...");
-            $( "<p>TOP ostoskerrat</p>" ).appendTo("#topdiv");
-            $( "<table/>", {
-                "class": "table",
-                html: items.join( "" )
-            }).appendTo( "#topdiv" );
-
-        });
-
-        });
-      }
-    }
-
-    // generate some random data, quite different range
-    function generateChartData() {
-        var chartData = [];
-        var firstDate = new Date();
-        var promise = $.Deferred();
-
-        firstDate.setDate(firstDate.getDate() - 100);
-
-        $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/totals", function( data ) {
-            var items = [];
-            $.each( data, function( index, elem ) {
-                chartData.push({
-                    date: elem.date,
-                    food: elem.food_cost,
-                    other: elem.other_cost,
-                    total: elem.total_cost
-                });
-            });
-
-//alert("Generated " + chartData.length);
+          $( "<p>TOP ostoskerrat</p>" ).appendTo("#topdiv-2");
+          $( "<table/>", {
+            "class": "table",
+            html: items.join( "" )
+          }).appendTo( "#topdiv-2" );
 
         });
 
-        /*
-        for (var i = 0; i < 100; i++) {
-            // we create date objects here. In your data, you can have date strings
-            // and then set format of your dates using chart.dataDateFormat property,
-            // however when possible, use date objects, as this will speed up chart rendering.
-            var newDate = new Date(firstDate);
-            newDate.setDate(newDate.getDate() + i);
-
-            var visits = Math.round(Math.random() * 40) + 100;
-            var hits = Math.round(Math.random() * 80) + 500;
-            var views = Math.round(Math.random() * 600);
-
-            chartData.push({
-                date: newDate,
-                visits: visits,
-                hits: hits,
-                views: views
-            });
-        } */
-
-        return $.when(promise).done(function(){
-            console.log('both tasks in function1 are done');
-            return chartData;
-        // Asyncs tasks are done
-        }).promise();
-
-        return chartData;
+      });
     }
+  }
 
-    function zoomChart(){
-        chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
-    }
+  function generateChartData() {
+    var chartData = [];
+    var firstDate = new Date();
+    var promise = $.Deferred();
 
-    function clickGraph(e)
-    {
-        console.log(e);
-    }
+    firstDate.setDate(firstDate.getDate() - 100);
 
-    function clickGraphItem(e)
-    {
-        var clickedDate = e.item.serialDataItem.dataContext.date;
-        console.log("Got event: " + e);
-        console.log(e.item.serialDataItem.dataContext.date);
-        console.log(e.item.serialDataItem.dataContext);
-        console.log(e.item);
-
-        console.log("CLICK: " + "/api/purchases/"+id+"@ostosdata.oulu.fi/date/" + clickedDate);
-
-        $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/date/" + clickedDate, function( data ) {
-            var items = [];
-            $.each( data, function( index, elem ) {
-
-                items.push( "<tr><td class='"+elem.food+"'>" + elem.category + "</td>" +
-                            "<td class='"+elem.food+"'>" + elem.price + " €</td>" +
-                            "</tr>" );
-            });
-
-            $("#infodiv").empty();
-
-            $( "<p>P&auml;iv&auml;n ostokset "+$.date(clickedDate)+ ":</p>" ).appendTo("#infodiv");
-            $( "<table/>", {
-                "class": "table",
-                html: items.join( "" )
-            }).appendTo( "#infodiv" );
+    $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/totals", function( data ) {
+      var items = [];
+      $.each( data, function( index, elem ) {
+        chartData.push({
+          date: elem.date,
+          food: elem.food_cost,
+          other: elem.other_cost,
+          total: elem.total_cost
         });
-    }
+      });
+    });
 
-$.date = function(dateObject) {
+    return $.when(promise).done(function(){
+      console.log('both tasks in function1 are done');
+      return chartData;
+      // Asyncs tasks are done
+    }).promise();
+
+    return chartData;
+  }
+
+  function zoomChart(){
+    chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
+  }
+
+  function clickGraph(e)
+  {
+    console.log(e);
+  }
+
+  function clickGraphItem(e)
+  {
+    var i = chart.chartCursor.index;
+    var clickedDate = chart.categoryAxis.data[i].dataContext.realDate;
+
+    console.log("CLICK: " + "/api/purchases/"+id+"@ostosdata.oulu.fi/date/" + clickedDate);
+
+    $.getJSON( "/api/purchases/"+id+"@ostosdata.oulu.fi/date/" + clickedDate, function( data ) {
+      var items = [];
+      $.each( data, function( index, elem ) {
+
+        items.push( "<tr><td class='"+elem.food+"'>" + elem.category + "</td>" +
+                   "<td class='"+elem.food+"'>" + elem.price + " €</td>" +
+                   "</tr>" );
+      });
+
+      $("#infodiv").empty();
+
+      $( "<p>P&auml;iv&auml;n ostokset "+$.date(clickedDate)+ ":</p>" ).appendTo("#infodiv");
+      $( "<table/>", {
+        "class": "table",
+        html: items.join( "" )
+      }).appendTo( "#infodiv" );
+    });
+  }
+
+  $.date = function(dateObject) {
     var d = new Date(dateObject);
     var day = d.getDate();
     var month = d.getMonth() + 1;
@@ -273,13 +276,13 @@ $.date = function(dateObject) {
     var date = day + "." + month + "." + year;
 
     return date;
-};
+  };
 
-    $(document).ready(function() {
-        setTimeout(function(){
-            $( "a:contains('JS chart')" ).fadeOut();
-            }, 400);
-    } );
+  $(document).ready(function() {
+    setTimeout(function(){
+      $( "a:contains('JS chart')" ).fadeOut(1500);
+    }, 2000);
+  } );
 </script>
 
 {% endblock %}

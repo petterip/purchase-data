@@ -55,34 +55,37 @@
 <a class="secret" href="{{servlet-context}}/">Upload file</a>
 </li>-->
               <li {% ifequal page "purchases.html" %} class="active"{%endifequal%}>
-                <a class="secret" href="{{servlet-context}}/purchases">Ostosraportti</a>
+                <a class="secret" href="{{servlet-context}}/purchases">Purchase report</a>
               </li>
               <li {% ifequal page "items.html" %} class="active"{%endifequal%}>
-                <a class="secret" href="{{servlet-context}}/items">Kuitit</a>
+                <a class="secret" href="{{servlet-context}}/items">Receipts</a>
+              </li>
+              <li {% ifequal page "about.html" %} class="active"{%endifequal%}>
+              <a href="{{servlet-context}}/probe-t1">Probe-T1</a>
               </li>
               <li {% ifequal page "chart.html" %} class="active"{%endifequal%}>
-                <a class="secret" href="{{servlet-context}}/chart">Kustannukset</a>
+                <a class="secret" href="{{servlet-context}}/chart">Proto-P1</a>
               </li>
               <li {% ifequal page "nutrition.html" %} class="active"{%endifequal%}>
-                <a class="secret" href="{{servlet-context}}/nutrition">Ravinto-A</a>
+                <a class="secret" href="{{servlet-context}}/nutrition">Proto-P2a</a>
               </li>
               <li {% ifequal page "nutrition-area.html" %} class="active"{%endifequal%}>
-                <a class="secret" href="{{servlet-context}}/nutrition-area">Ravinto-B</a>
+                <a class="secret" href="{{servlet-context}}/nutrition-area">Proto-P2b</a>
               </li>
-              <li {% ifequal page "nutrition-total.html" %} class="active"{%endifequal%}>
+<!--              <li {% ifequal page "nutrition-total.html" %} class="active"{%endifequal%}>
                 <a class="secret" href="{{servlet-context}}/nutrition-total">Ravinto-C</a>
-              </li>
+              </li> -->
               <!--
 <li {% ifequal page "about.html" %} class="active"{%endifequal%}>
 <a href="{{servlet-context}}/about">About</a>
 </li> -->
             </ul>
-            <div style="float:right">
+<!--          <div style="float:right">
               <a href="/chart?a#id1">1</a>
               <a href="/chart?a#id3">3</a>
               <a href="/chart?b#id4">4</a>
               <a href="/chart?c#id7">7</a>
-            </div>
+            </div> -->
           </div>
         </div>
       </nav>

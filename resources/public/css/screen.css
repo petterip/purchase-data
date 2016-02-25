@@ -11,12 +11,23 @@ body {
 .load {
   background: white;
   width: 800px;
+  padding-top: 30px;
 	padding-bottom: 10px;
   margin-bottom: 30px;
 }
 
+.load p
+{
+  padding: 5px 30px;
+}
+
+.load a
+{
+ font-weight: bold;
+}
+
 .ident {
-  padding: 30px 30px 0 30px;
+  padding: 0 30px 0 30px;
 }
 
 .purchases {
@@ -75,27 +86,31 @@ form, .error {
   height:470px;
 }
 
-#infodiv, #topdiv {
+#infodiv, #topdiv-1, #topdiv-2 {
   font: 11px "Verdana";
   padding-left: 65px;
-  float: left;
-  width: 36%;
 }
+
+#infodiv p, #topdiv-1 p, #topdiv-2 p
+{
+  color: #005;
+  font-weight: bold;
+}
+
 
 #infodiv table, #topdiv table {
   width: 100%;
 }
-#topdiv {
-  height: 276px;
-  overflow-y: scroll;
-}
-#infodiv td, #topdiv td, #info td {
+
+#infodiv td, #topdiv-1 td, #topdiv-2 td, #info td {
   line-height: 10px;
   padding: 4px;
 }
+
 #infodiv td.food {
   color: green;
 }
+
 #infodiv td.other {
   color: blue;
 }
@@ -104,6 +119,7 @@ form, .error {
   background-color: #fdfdfd;
   font: 10px "Verdana";
   padding: 30px 10px;
+  margin-bottom: 200px;
   float: left;
   width: 100%;
 }
@@ -164,26 +180,31 @@ form, .error {
 #panel1 p {
   color: #67b7dc;
   font-weight: bold;
+  font-size: 110% !important;
 }
 
 #panel2 p {
   color: #84b761;
   font-weight: bold;
+  font-size: 110% !important;
 }
 
 #panel3 p {
   color: #cc4748;
   font-weight: bold;
+  font-size: 110% !important;
 }
 
 #panel4 p {
   color: #cd82ad;
   font-weight: bold;
+  font-size: 110% !important;
 }
 
 #panel5 p {
   color: #aa0;
   font-weight: bold;
+  font-size: 110% !important;
 }
 
 #panel5 a {
@@ -207,4 +228,10 @@ span.red {
 span.yellow {
   font-weight: bold;
   color: #990;
+}
+
+a.btn-xs {
+  margin-bottom: 10px;
+  font-size: 95% !important;
+  font-weight: normal !important;
 }

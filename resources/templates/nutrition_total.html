@@ -18,8 +18,8 @@
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-  var secret = atob(getURLParameter('secret'));
-  var id = secret ? secret : "id1";
+  var secret = getURLParameter('secret');
+  var id = (secret != null) ? atob(secret) : "id0";
   var chart;
   var legend;
   var selected;

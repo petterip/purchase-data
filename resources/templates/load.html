@@ -2,89 +2,116 @@
 {% block content %}
 
 <div class="row">
-    <div class="span12 load">
-        <p class="ident"><strong>You can upload purchase reports as csv files (e.g. ostotietoraportti.csv), receipts for recognition (.jpg) and
-            text files (.txt) already recognized with OCR. Select whether you want to upload a purchase report or a receipt.</strong></p>
-
-        <div>
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Upload purchase report</a></li>
-                <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Upload receipt</a></li>
-            </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <form method="POST" action="/" enctype="multipart/form-data">
-                    {% csrf-field %}
-
-                    <p>
-                        Informant email address:
-                        <input class="form-control"
-                               type="text"
-                               name="email"
-                               value="id5@ostosdata.oulu.fi" />
-                    </p>
-                    {% if errors.email %}
-                    <div class="alert alert-danger">Please give your email address ({{errors.email|join}})</div>
-                    {% endif %}
-
-                    <div id="date-tab">
-                        <p>
-                            Date of visit in the store:</p>
-                        <div class="input-group date">
-                            <input type="text" class="form-control" name="date" value="{{date}}" />
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                        </div>
-                        {% if errors.date %}
-                        <div class="alert alert-danger">Please give a valid date in form YYYY-MM-DD ({{errors.date|join}})</div>
-                        {% endif %}
-                    </div>
-
-                    <p>
-                        File:
-                        <input name="file" type="file" size="20" />
-                    </p>
-                    {% if errors.file %}
-                    <div class="alert alert-danger">Please include a file</div>
-                    {% endif %}
-
-                    <div id="comment-tab">
-                        <p>
-                            Comments:
-                            <textarea class="form-control"
-                                      rows="4"
-                                      cols="50"
-                                      name="comment">{{comment}}</textarea>
-                        </p>
-                        {% if errors.comment %}
-                        <div class="alert alert-danger">{{errors.comment|join}}</div>
-                        {% endif %}
-                    </div>
-
-                    <button type="submit" data-loading-text="Processing..." class="btn btn-primary">Submit file</button>
-                    <!-- <input type="submit" class="btn btn-primary" value="Submit file" /> -->
-                </form>
-
-            </div> <!-- tab-content -->
-        </div>
+  <div class="span12 load">
+    <p class="ident">
+      <strong>Discovering Value for Health with Grocery Shopping Data</strong>
+    </p>
+    <p>Purchase Data Analytics is a proof of concept application for demonstrating the reverse use of customer data. The application allows informants to import purchase data made
+      available to customers by S Group, and grocery shopping receipts. The receipts complete otherwise sparse purchase data with nutritional details. Lastly, the data is visualized
+      for the informant to evaluate its usefulness and meaningfulness. The data provided online are for demonstration purposes only.</p>
+    <p>
+      The user tests made use of two technology probes and two prototypes:
+    </p>
+    <div class="files span12 ">
+    <ul class="list-group ident">
+      <li class="list-group-item list-group-item-info"><a href="/purchases">Purchase report</a> shows the data included in a single purchase report submitted by a sudy participant.</li>
+      <li class="list-group-item list-group-item-info"><a href="/items">Receipts</a> include purchases scanned and recognized from participant's receipts. Contrary to purchase reports,
+        receipts contain enough data for identifying single products with EAN code (product name, price and store). The code permits to retrieve additional nutritional information for each
+        product and eventually build a nutritional profile for each participant (feature utilized in the prototype P2). As an example, an image of each product is fetched indicating that
+        the product has been successfully identified with an EAN code.</li>
+      <li class="list-group-item list-group-item-success"><a href="/probe-t1">Probes T1</a> and <a target="_blank" href="https://github.com/mbostock/d3/wiki/Gallery">T2</a> were used in
+        the intial participant interviews to chart motivational factors and visual preferences.</li>
+      <li class="list-group-item list-group-item-info"><a href="/chart">Protoype P1</a> visualizes purely data retrieved from the submitted purchase reports.</li>
+      <li class="list-group-item list-group-item-success"><a href="/nutrition">Protoype P2a</a> visualizes data retrieved from the purchase reports and enriched with participant nutritional profile. Bar charts are used.</li>
+      <li class="list-group-item list-group-item-info"><a href="/nutrition-area">Protoype P2b</a> similarly visualizes the nutritional data using a stack area chart.</li>
+    </ul>
     </div>
+    <p>
+      The application is published as open source with MIT License. The source code is available though <a target="_blank" href="https://gitlab.com/petterip/purchase-data">GitLab repository.</a></p>
+    <p>Please <a href="mailto:petteri.ponsimaa@oulu.fi">contact the author</a> for additional support.</p>
+
+    <p><strong>You may upload purchase reports as csv files (e.g. ostotietoraportti.csv), receipts for recognition (.jpg) and
+      text files (.txt) already recognized with OCR. Select whether you want to upload a purchase report or a receipt.</strong></p>
+
+    <div>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Upload purchase report</a></li>
+        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Upload receipt</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <form method="POST" action="/" enctype="multipart/form-data">
+          {% csrf-field %}
+
+          <p>
+            Informant email address:
+            <input class="form-control"
+                   type="text"
+                   name="email"
+                   value="id5@ostosdata.oulu.fi" />
+          </p>
+          {% if errors.email %}
+          <div class="alert alert-danger">Please give your email address ({{errors.email|join}})</div>
+          {% endif %}
+
+          <div id="date-tab">
+            <p>
+              Date of visit in the store:</p>
+            <div class="input-group date">
+              <input type="text" class="form-control" name="date" value="{{date}}" />
+              <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+            </div>
+            {% if errors.date %}
+            <div class="alert alert-danger">Please give a valid date in form YYYY-MM-DD ({{errors.date|join}})</div>
+            {% endif %}
+          </div>
+
+          <p>
+            File:
+            <input name="file" type="file" size="20" />
+          </p>
+          {% if errors.file %}
+          <div class="alert alert-danger">Please include a file</div>
+          {% endif %}
+
+          <div id="comment-tab">
+            <p>
+              Comments:
+              <textarea class="form-control"
+                        rows="4"
+                        cols="50"
+                        name="comment">{{comment}}</textarea>
+            </p>
+            {% if errors.comment %}
+            <div class="alert alert-danger">{{errors.comment|join}}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" data-loading-text="Processing..." class="btn btn-primary">Submit file</button>
+          <!-- <input type="submit" class="btn btn-primary" value="Submit file" /> -->
+        </form>
+
+      </div> <!-- tab-content -->
+    </div>
+  </div>
 </div>
 {% if files %}
 
 <div class="row load">
-    <div class="span12">
-        <p class="ident"><strong>Last uploaded files:</strong></p>
-        <ul class="">
-            {% for item in files %}
-            <li>
-                <p>File {{item.fname}} uploaded on {{item.timestamp|date:"yyyy-MM-dd HH:mm"}}<br/>
-                    <time>ID: {{item.email}}<br/>
-                        {{item.comment}}</time></p>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+  <div class="span12">
+    <p class="ident"><strong>Last uploaded files:</strong></p>
+    <ul class="">
+      {% for item in files %}
+      <li>
+        <p>File {{item.fname}} uploaded on {{item.timestamp|date:"yyyy-MM-dd HH:mm"}}<br/>
+          <time>ID: {{item.email}}<br/>
+            {{item.comment}}</time></p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 
 {% endif %}

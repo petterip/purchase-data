@@ -16,8 +16,8 @@
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-  var secret = atob(getURLParameter('secret'));
-  var id = secret ? secret : "id1";
+  var secret = getURLParameter('secret');
+  var id = (secret != null) ? atob(secret) : "id0";
   var chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
     "theme": "light",
@@ -176,6 +176,14 @@
       "cursorPosition": "middle",
       "leaveAfterTouch": true
     },
+    "chartCursor": {
+      //"categoryBalloonDateFormat": "DD",
+      "cursorAlpha": 0.1,
+      //"cursorColor":"yellow",
+      "fullWidth":true,
+      //"valueBalloonsEnabled": false,
+      //"zoomable": false
+    },
     "categoryField": "date",
     "categoryAxis": {
       "parseDates": false,
@@ -260,7 +268,7 @@
     var i = chart.chartCursor.index;
     var clickedDate = chart.categoryAxis.data[i].dataContext.month;
     var dateCategory = chart.categoryAxis.data[i].dataContext.date;
-    var category = dateCategory.replace("<br>", " ").toLowerCase();
+    var category = dateCategory.replace("<br>", "&nbsp;").toLowerCase();
 
     $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fiber", function( data ) {
       var items = [];
@@ -381,9 +389,11 @@
         html: items.join( "" )
       }).appendTo( "#panel5" );
 
-      $("<a/>" , { href: "#", html: ">> Näytä kaikki arvot" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+      $("<a/>" , { href: "#", class: "btn btn-default btn-xs",
+                   html: "Näytä kaikki arvot >>" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
       $("<br/>").appendTo("#panel5");
-      $("<a/>" , { href: "#", html: ">> Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
+      $("<a/>" , { href: "#", class: "btn btn-default btn-xs",
+                   html: "<< Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
 
       $("#info tr").hide();
       $("#info tr:nth-child(-n+5)").show();
@@ -423,8 +433,9 @@
 
   $(document).ready(function() {
     setTimeout(function(){
-      $( "a:contains('JS chart')" ).fadeOut();
-    }, 400);
+      $( "a:contains('JS chart')" ).fadeOut(1500);
+      $( "tspan:contains('Show all')" ).text("Näytä kaikki");
+    }, 2000);
   } );
 
 </script>

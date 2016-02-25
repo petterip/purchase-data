@@ -16,23 +16,26 @@
 {% endblock %}
 {% block page-scripts %}
 <script type="text/javascript">
-  var secret = atob(getURLParameter('secret'));
-  var id = secret ? secret : "id1";
+  var secret = getURLParameter('secret');
+  var id = (secret != null) ? atob(secret) : "id0";
   var chart = AmCharts.makeChart("chartdiv", {
     "type": "serial",
     "theme": "light",
+    "addClassNames": true,
     "legend": {
       "valueText": "[[percents]]",
       "valueFunction": formatLegendValue,
       "precision": 1,
       "markerBorderColor": "#000",
       "markerBorderAlpha": 0.1,
-      "valueWidth": 27
+      "valueWidth": 27,
+      "autoMargins": false,
+      "marginRight": 100
     },
     "numberFormatter": {
       "precision": 0,
       "thousandsSeparator": ""
-   },
+    },
     "balloon": {
       horizontalPadding: 8,
       verticalPadding: 1,
@@ -71,18 +74,21 @@
       "axisAlpha": 1,
       "position": "left",
       "title": "grammaa",
+      "addClassNames": true,
     }, {
       "id":"v2",
       "stackType": "regular",
       "axisColor": "cyan",
       "axisThickness": 2,
       "gridAlpha": 0,
-      "offset": 50,
+      "offset": 80,
+      "labelOffset": -5,
       "axisAlpha": 1,
       "position": "right",
       "title": "Mcal",
       "minimum": 0,
-      "maximum": 100,
+      "maximum": 50,
+      "addClassNames": true,
       "strictMinMax": true
     }, {
       "id":"v3",
@@ -91,9 +97,11 @@
       "axisThickness": 2,
       "gridAlpha": 0,
       "offset": 0,
+      //"labelOffset": -5,
       "axisAlpha": 1,
       "position": "right",
       "title": "euroa",
+      "addClassNames": true,
       "unit": " €"
     }],
     "graphs": [{
@@ -111,7 +119,7 @@
       "type": "line",
       "columnWidth": 0.9,
       "color": "red",
-      "title": "Huonot rasvat*", // Rasva (tyydyttymättömät)
+      "title": "Huonot rasvat*", // Rasva (tyydyttyneet)
       "valueField": "fat_saturated"
     }, {
       "valueAxis": "v1",
@@ -121,8 +129,7 @@
       "columnWidth": 0.9,
       "color": "#aa0",
       "title": "Hiilihydraatit",
-      "valueField": "carb",
-      //           "fillAlphas": 0.3
+      "valueField": "carb"
     }, {
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Kuituja <b>[[value]]</b> g</span>",
@@ -131,7 +138,7 @@
       "columnWidth": 0.9,
       "color": "#aa0",
       "title": "Kuidut",
-      "valueField": "fiber",
+      "valueField": "fiber"
     }, {
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Sokeria <b>[[value]]</b> g</span>",
@@ -140,8 +147,7 @@
       "type": "line",
       "color": "#aa0",
       "title": "Sokeri",
-      "valueField": "sugar",
-      //           "fillAlphas": 0.3
+      "valueField": "sugar"
     }, {
       "valueAxis": "v1",
       "balloonText": "<span style='font-size:12px'>Proteiineja <b>[[value]]</b> g</span>",
@@ -150,7 +156,7 @@
       "columnWidth": 0.9,
       "color": "#aa0",
       "title": "Proteiinit",
-      "valueField": "prot",
+      "valueField": "prot"
     }, {
       "valueAxis": "v3",
       "balloonText": "<span style='font-size:12px'>Hinta <b>[[value]]</b> €</span>",
@@ -168,20 +174,25 @@
       "bulletBorderAlpha": 1,
       "useLineColorForBulletBorder": true,
       "title": "Hinta",
-      "valueField": "price",
+      "valueField": "price"
     }, {
       "valueAxis": "v2",
       "balloonText": "<span style='font-size:12px'>Energiaa <b>[[value]]</b> Mcal</span>",
-      "fillAlphas": 0.4,
-      "type": "column",
+      "fillAlphas": 0,
+      "type": "line",
       "color": "cyan",
       "lineColor": "cyan",
-      "lineThickness": 1,
-      "lineAlpha": 0.6,
-      "minMaxMultiplier": 0.2,
-      "columnWidth": 0.4,
+      "lineThickness": 3,
+      "lineAlpha": 0.8,
+      "bullet": "triangleUp",
+      "bulletColor": "#0aa",
+      "bulletAlpha": 0.8,
+      "bulletBorderThickness": 2,
+      "bulletSize": 10,
+      "bulletBorderAlpha": 1,
+      "useLineColorForBulletBorder": true,
       "title": "Energia",
-      "valueField": "energy",
+      "valueField": "energy"
     }],
     "chartScrollbar": { "enabled": false },
     "chartCursor": {
@@ -192,7 +203,7 @@
     "categoryAxis": {
       "parseDates": false,
       "axisColor": "#DADADA",
-      "minorGridEnabled": true,
+      "minorGridEnabled": true
     },
     "export": {
       "enabled": true,
@@ -200,7 +211,6 @@
     }
   });
 
-  chart.addListener("dataUpdated", zoomChart);
   chart.addListener("clickGraphItem", clickGraphItem);
   chart.addListener("clickGraph", clickGraphItem);
   $("#chartdiv").on("click", clickGraphItem);
@@ -223,18 +233,18 @@
       $("<p>Ostosten ravintoarvot jaettuna per päivä (" + total.days + " päivää)</p>").appendTo("#instructions");
 
       $("<span>Rasvat:	" + totalString(total.fat/days, energy_consumption*0.25/9, energy_consumption*0.4/9, "g/pv") +
-              "Huonot rasvat*: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
+        "Huonot rasvat*: " + totalString(total.fat_saturated/days, 0, energy_consumption*0.1/9, "g/pv")).appendTo("#panel1");
       $( "<span><br/>*) Hyvät rasvat sisältävät tyydyt&shy;tymättömät rasvahapot ja huonot tyydyttyneet rasvat.</span>").appendTo("#panel1");
 
       $("<span>Hiilihydraatit: " + totalString(total.carb/days, energy_consumption*0.45/4, energy_consumption*0.60/4, "g/pv")).appendTo("#panel2");
 
       $("<span>Kuidut: " + totalString(total.fiber/days, 25, 35, "g/pv") +
-              "Proteiinit: " + totalString(total.prot/days, energy_consumption*0.1/4, energy_consumption*0.2/4, "g/pv")).appendTo("#panel3");
+        "Proteiinit: " + totalString(total.prot/days, energy_consumption*0.1/4, energy_consumption*0.2/4, "g/pv")).appendTo("#panel3");
 
       $("<span>Sokeri: " + totalString(total.sugar/days, 0, energy_consumption*0.1/2, "g/pv")).appendTo("#panel4");
 
       $("<span>Hinta: " + totalString(total.price/days, 0, 0, "€/pv" ) +
-              "Paino: " + totalString(total.weight/days, 0, 0, "g/pv")).appendTo("#panel5");
+        "Paino: " + totalString(total.weight/days, 0, 0, "g/pv")).appendTo("#panel5");
     });
   }
 
@@ -253,162 +263,209 @@
 
   }
   function postProcess(chartData, config) {
-    alert("Got " + chartData.length);
+    alert("postProcess: Got " + chartData.length);
     return chartData;
   }
 
-    function zoomChart(){
+  function zoomChart(){
     chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
+  }
+
+  function clickOnLegend(e)
+  {
+    var i = chart.chartCursor.index;
+    if (typeof(chart.categoryAxis.data[i]) == "undefined")
+    {
+      return updateAxes();
+    }
   }
 
   function clickGraphItem(e)
   {
     var i = chart.chartCursor.index;
-    var clickedDate = chart.categoryAxis.data[i].dataContext.month;
-    var dateCategory = chart.categoryAxis.data[i].dataContext.date;
-    var category = dateCategory.replace("<br>", " ").toLowerCase();
 
-    $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fiber", function( data ) {
-      var items = [];
+    if (typeof(chart.categoryAxis.data[i]) == "undefined")
+    {
+      return updateAxes();
+    }
+    else
+    {
+      var i = chart.chartCursor.index;
+      var clickedDate = chart.categoryAxis.data[i].dataContext.month;
+      var dateCategory = chart.categoryAxis.data[i].dataContext.date;
+      var category = dateCategory.replace("<br>", " ").toLowerCase();
 
-      // fat
-      $.each( sortJsonField(data, "fat"), function( index, elem ) {
-        if(elem.fat > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat + "&nbsp;g</td>" +
-                     "</tr>" );
+      $.getJSON( "/api/nutrition/"+id+"@ostosdata.oulu.fi/date/" + clickedDate + "/fiber", function( data ) {
+        var items = [];
+
+        // fat
+        $.each( sortJsonField(data, "fat"), function( index, elem ) {
+          if(elem.fat > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $("#instructions").empty();
+        $("#panel1").empty();
+
+        $( "<p>Rasvaisimmat ostokset ("+category+"):</p>" ).appendTo("#panel1");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel1" );
+
+        // fat_saturated
+        items = [];
+        $.each( sortJsonField(data, "fat_saturated"), function( index, elem ) {
+          if(elem.fat_saturated > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat_saturated + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $( "<p style='color:orange'>Huonoa rasvaa*:</p>" ).appendTo("#panel1");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel1" );
+        $( "<span><br/>*) Hyvät rasvat sisältävät tyydyt&shy;tymättömät rasvahapot ja huonot tyydyttyneet rasvat.</span>").appendTo("#panel1");
+
+        // carb
+        items = [];
+        $.each( sortJsonField(data, "carb"), function( index, elem ) {
+          if(elem.carb > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.carb+"'>" + elem.carb + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $("#panel2").empty();
+
+        $( "<p>Eniten hiilihydraatteja ("+category+"):</p>" ).appendTo("#panel2");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel2" );
+
+        // fiber
+        items = [];
+        $.each( sortJsonField(data, "fiber"), function( index, elem ) {
+          if(elem.fiber > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.fiber+"'>" + elem.fiber + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $("#panel3").empty();
+
+        $( "<p>Eniten kuituja ("+category+"):</p>" ).appendTo("#panel3");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel3" );
+
+        // prot
+        items = [];
+        $.each( sortJsonField(data, "prot"), function( index, elem ) {
+          if(elem.prot > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.prot+"'>" + elem.prot + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $( "<p style='color:#2f4074'>Eniten proteiineja:</p>" ).appendTo("#panel3");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel3" );
+
+        // sugar
+        items = [];
+        $.each( sortJsonField(data, "sugar"), function( index, elem ) {
+          if(elem.sugar > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.sugar+"'>" + elem.sugar + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $("#panel4").empty();
+
+        $( "<p>Sokerisimmat ("+category+"):</p>" ).appendTo("#panel4");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel4" );
+
+        // energy
+        $.each( sortJsonField(data, "energy"), function( index, elem ) {
+          if(elem.energy > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.energy+"'>" + elem.energy + "&nbsp;g</td>" +
+                       "</tr>" );
+        });
+
+        $( "<p style='color:darkcyan'>Eniten energiaa:</p>" ).appendTo("#panel4");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel4" );
+
+        // price
+        items = [];
+        $.each( sortJsonField(data, "price"), function( index, elem ) {
+          if(elem.price > 0)
+            items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
+                       "<td style='text-align:right' class='"+elem.price+"'>" + elem.price + "&nbsp;€</td>" +
+                       "</tr>" );
+        });
+
+        $("#panel5").empty();
+
+        $( "<p>Hintavimmat ("+category+"):</p>" ).appendTo("#panel5");
+        $( "<table/>", {
+          "class": "table",
+          html: items.join( "" )
+        }).appendTo( "#panel5" );
+
+        $("<a/>" , { href: "#", class: "btn btn-default btn-xs",
+                    html: "Näytä kaikki arvot >>" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
+        $("<br/>").appendTo("#panel5");
+        $("<a/>" , { href: "#", class: "btn btn-default btn-xs",
+                    html: "<< Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
+
+        $("#info tr").hide();
+        $("#info tr:nth-child(-n+5)").show();
+
       });
+    }
+  }
 
-      $("#instructions").empty();
-      $("#panel1").empty();
+  // AmCharts valueaxes will overlap if there is more than one of them, a shortcoming in amCharts.
+  // Credits for the solution: Anton Maslo,
+  // http://www.amaslo.com/2015/04/micro-solution-automatic-value-axes-offset-amcharts.html
+  function updateAxes() {
+    var oAxesOffsetPerPosition = {};
 
-      $( "<p>Rasvaisimmat ostokset ("+category+"):</p>" ).appendTo("#panel1");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel1" );
+    // After chart is rendered, find value axes in the SVG
+    // Using class names from http://www.amcharts.com/tutorials/css-class-names/
+    chart.valueAxes.forEach(function (oAxis, nAxisIndex) {
+      $("#chartdiv").find('.value-axis-' + oAxis.id).each(function () {
+        // amCharts has three elements per .value-axis-[axisId], find the one with labels
+        if ($(this).find('.amcharts-axis-label').length > 0) {
+          if (!oAxesOffsetPerPosition.hasOwnProperty(oAxis.position))
+            oAxesOffsetPerPosition[oAxis.position] = 0;
 
-      // fat_saturated
-      items = [];
-      $.each( sortJsonField(data, "fat_saturated"), function( index, elem ) {
-        if(elem.fat_saturated > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fat+"'>" + elem.fat_saturated + "&nbsp;g</td>" +
-                     "</tr>" );
+          chart.valueAxes[nAxisIndex].offset = oAxesOffsetPerPosition[oAxis.position];
+
+          oAxesOffsetPerPosition[oAxis.position] += $(this)[0].getBBox().width + 10;
+        }
       });
-
-      $( "<p style='color:orange'>Huonoa rasvaa*:</p>" ).appendTo("#panel1");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel1" );
-      $( "<span><br/>*) Hyvät rasvat sisältävät tyydyt&shy;tymättömät rasvahapot ja huonot tyydyttyneet rasvat.</span>").appendTo("#panel1");
-
-      // carb
-      items = [];
-      $.each( sortJsonField(data, "carb"), function( index, elem ) {
-        if(elem.carb > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.carb+"'>" + elem.carb + "&nbsp;g</td>" +
-                     "</tr>" );
-      });
-
-      $("#panel2").empty();
-
-      $( "<p>Eniten hiilihydraatteja ("+category+"):</p>" ).appendTo("#panel2");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel2" );
-
-      // fiber
-      items = [];
-      $.each( sortJsonField(data, "fiber"), function( index, elem ) {
-        if(elem.fiber > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.fiber+"'>" + elem.fiber + "&nbsp;g</td>" +
-                     "</tr>" );
-      });
-
-      $("#panel3").empty();
-
-      $( "<p>Eniten kuituja ("+category+"):</p>" ).appendTo("#panel3");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel3" );
-
-      // prot
-      items = [];
-      $.each( sortJsonField(data, "prot"), function( index, elem ) {
-        if(elem.prot > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.prot+"'>" + elem.prot + "&nbsp;g</td>" +
-                     "</tr>" );
-      });
-
-      $( "<p style='color:#2f4074'>Eniten proteiineja:</p>" ).appendTo("#panel3");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel3" );
-
-      // sugar
-      items = [];
-      $.each( sortJsonField(data, "sugar"), function( index, elem ) {
-        if(elem.sugar > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.sugar+"'>" + elem.sugar + "&nbsp;g</td>" +
-                     "</tr>" );
-      });
-
-      $("#panel4").empty();
-
-      $( "<p>Sokerisimmat ("+category+"):</p>" ).appendTo("#panel4");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel4" );
-
-      // energy
-      $.each( sortJsonField(data, "energy"), function( index, elem ) {
-        if(elem.energy > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.energy+"'>" + elem.energy + "&nbsp;g</td>" +
-                     "</tr>" );
-      });
-
-      $( "<p style='color:darkcyan'>Eniten energiaa:</p>" ).appendTo("#panel4");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel4" );
-
-      // price
-      items = [];
-      $.each( sortJsonField(data, "price"), function( index, elem ) {
-        if(elem.price > 0)
-          items.push( "<tr><td class='"+elem.category+"'>" + elem.category + "</td>" +
-                     "<td style='text-align:right' class='"+elem.price+"'>" + elem.price + "&nbsp;€</td>" +
-                     "</tr>" );
-      });
-
-      $("#panel5").empty();
-
-      $( "<p>Hintavimmat ("+category+"):</p>" ).appendTo("#panel5");
-      $( "<table/>", {
-        "class": "table",
-        html: items.join( "" )
-      }).appendTo( "#panel5" );
-
-      $("<a/>" , { href: "#", html: ">> Näytä kaikki arvot" }).on("click", function () { $("#info tr").show(); $(this).hide(); }).appendTo("#panel5");
-      $("<br/>").appendTo("#panel5");
-      $("<a/>" , { href: "#", html: ">> Päivittäiset ravintoarvot" }).on("click", showTotals).appendTo("#panel5");
-
-      $("#info tr").hide();
-      $("#info tr:nth-child(-n+5)").show();
-
     });
+
+    // Redraw chart with updated .valueAxes data
+    chart.validateData();
+    return true;
   }
 
   $.date = function(dateObject) {
@@ -443,8 +500,9 @@
 
   $(document).ready(function() {
     setTimeout(function(){
-      $( "a:contains('JS chart')" ).fadeOut();
-    }, 400);
+      $( "a:contains('JS chart')" ).fadeOut(1500);
+      $( "tspan:contains('Show all')" ).text("Näytä kaikki");
+    }, 2000);
   } );
 
 </script>
