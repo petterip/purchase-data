@@ -26,6 +26,8 @@
       <li class="list-group-item list-group-item-info"><a href="/chart"><img src="/img/proto1.jpg">Protoype P1</a> visualizes purely data retrieved from the submitted purchase reports.</li>
       <li class="list-group-item list-group-item-success"><a href="/nutrition"><img src="/img/proto2a.jpg">Protoype P2a</a> visualizes data retrieved from the purchase reports and enriched with participant nutritional profile. Bar charts are used.</li>
       <li class="list-group-item list-group-item-info"><a href="/nutrition-area"><img src="/img/proto2b.jpg">Protoype P2b</a> similarly visualizes the nutritional data using a stack area chart.</li>
+      <li class="list-group-item list-group-item-success"><a href="/nutrition-total"><img src="/img/proto3.jpg">Protoype P3</a> is the final data visualization representing purchase report in a
+        pie chart, with improvements based the last evaluation interviews.<br>(Not evaluated and therefore not included in the thesis)</li>
     </ul>
     </div>
     <p>
@@ -53,7 +55,8 @@
             <input class="form-control"
                    type="text"
                    name="email"
-                   value="id5@ostosdata.oulu.fi" />
+                   value="{{email}}"
+                   placeholder="id@ostosdata.oulu.fi"/>
           </p>
           {% if errors.email %}
           <div class="alert alert-danger">Please give your email address ({{errors.email|join}})</div>
@@ -62,7 +65,7 @@
           <div id="date-tab">
             <p>
               Date of visit in the store:</p>
-            <div class="input-group date">
+            <div class="input-group date ident">
               <input type="text" class="form-control" name="date" value="{{date}}" />
               <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
             </div>
@@ -102,7 +105,7 @@
 </div>
 {% if files %}
 
-<div class="row load">
+<div class="row">
   <div class="span12">
     <p class="ident"><strong>Last uploaded files:</strong></p>
     <ul class="">

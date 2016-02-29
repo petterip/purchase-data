@@ -32,7 +32,6 @@ h1 {
  font-weight: bold;
 }
 
-a[href^="http://"]:after,
 a[href^="https://"]:after {
   content: url(http://upload.wikimedia.org/wikipedia/commons/6/64/Icon_External_Link.png);
   margin: 0 0 0 5px;
@@ -83,7 +82,7 @@ li img:hover {
 }
 
 
-li {
+.load li {
   overflow: auto;
 }
 
@@ -105,6 +104,10 @@ form, .error {
 	padding: 30px;
 	position: relative;
   background: white;
+}
+
+form button {
+  margin-top: 15px;
 }
 
 #chartdiv {
