@@ -5,7 +5,7 @@ informants to import purchase data made available to customers by S Group, and g
 sparse purchase data with nutritional details. Lastly, the data is visualized for the informant to evaluate its usefulness and meaningfulness.
 
 Visualizations make use of <a target="_blank" href="https://www.amcharts.com/">AmCharts</a> and <a href="https://gitlab.com/ledancs/hFigures">hFigures</a>.
-The implementation makes use of SQLite database for simplicity and Clojure <a target="_blank" href="http://www.luminusweb.net/">Luminus framework</a> to 
+The implementation uses SQLite database for simplicity and Clojure <a target="_blank" href="http://www.luminusweb.net/">Luminus framework</a> to 
 minimize the custom code base.
 <br/><br/>
 
