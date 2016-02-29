@@ -3,9 +3,9 @@
 Purchase Data Analytics is a proof of concept application for demonstrating the reverse use of customer data. The application allow informants to import purchase data made available to customers by S Group, and grocery shopping receipts. The receipts complete otherwise sparse purchase data with nutritional details. Lastly, the data is visualized for the informant to evaluate its usefulness and meaningfulness.
 
 <a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_items.jpg">
-<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_items.jpg" width=400></a>
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_items.jpg" width=403></a>
 <a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_purchases.jpg">
-<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_purchases.jpg" width=400></a><br/>
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_purchases.jpg" width=403></a><br/>
 <a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto1.jpg">
 <img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto1.jpg" width=200></a>
 <a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto2a.jpg">
@@ -41,21 +41,21 @@ or to run the application in a specific port:
 
 ## API calls
 
-The application serves the following API calls:
+The application serves the following API calls (each call is provided with an example result):
 
-* GET /api/purchases/ <br/>get all the purchases of every user.
-* GET /api/purchases/<id> <br/>get the purchases belonging to a particular user.
-* GET /api/purchases/<id>/totals <br/>get the purchase totals of a particular user.
-* GET /api/purchases/<id>/date/<date> <br/>get the purchases of specific date (date in format YYYY-MM-DD).
-* GET /api/purchases/<id>/top5 <br/>get the top purchases of a single user (sorted by costs).
-* GET /api/purchases/<id>/top5-count <br/>get the top purchases of a single user (sorted by amounts).
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/">/api/purchases</a> <br/>get all the purchases of every user.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi">/api/purchases/&lt;id&gt;</a> <br/>get the purchases belonging to a particular user.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/totals">/api/purchases/&lt;id&gt;/totals</a> <br/>get the purchase totals of a particular user.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/date/2015-01-11">/api/purchases/&lt;id&gt;/date/&lt;date&gt;</a> <br/>get the purchases of specific date (date in format YYYY-MM-DD).
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/top5">/api/purchases/&lt;id&gt;/top5</a> <br/>get the top purchases of a single user (sorted by costs).
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/top5-count">/api/purchases/&lt;id&gt;/top5-count</a> <br/>get the top purchases of a single user (sorted by amounts).
 
-* GET /api/nutrition/<id> <br/>get the nutrients from a particular user's purchases.
-* GET /api/nutrition/<id>/month <br/>get the nutrients from a particular user's purchases, grouped by months.
-* GET /api/nutrition/<id>/week <br/>get the nutrients from a particular user's purchases, grouped by weeks.
-* GET /api/nutrition/<id>/date/<month>/<nutrient> <br/>get the top nutrients from a particular user's purchases, for a given month, and sorted by <nutrient>.
-* GET /api/nutrition/<id>/category <br/>get the nutrients from a particular user's purchases including all the purchases.
-* GET /api/nutrition/<id>/total <br/>get a summary from a particular user's purchases including all the purchases.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi">/api/nutrition/&lt;id&gt;</a> <br/>get the nutrients from a particular user's purchases.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/month">/api/nutrition/&lt;id&gt;/month</a> <br/>get the nutrients from a particular user's purchases, grouped by months.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/week">/api/nutrition/&lt;id&gt;/week</a> <br/>get the nutrients from a particular user's purchases, grouped by weeks.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/date/09-2014/fiber">/api/nutrition/&lt;id&gt;/date/&lt;month&gt;/&lt;nutrient&gt;</a> <br/>get the top nutrients from a particular user's purchases, for a given month, and sorted by <nutrient>.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/categories">/api/nutrition/&lt;id&gt;/categories</a> <br/>get the nutrients from a particular user's purchases including all the purchases.
+* GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/total">/api/nutrition/&lt;id&gt;/total</a> <br/>get a summary from a particular user's purchases including all the purchases.
 
 <br/>
 Note: the repository does not contain file 'all_prods.json' which is necessary for recognizing receipts. Please [contact the author](mailto:petteri.ponsimaa@oulu.fi) for instructions how to get it.
