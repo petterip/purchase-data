@@ -6,6 +6,14 @@ Purchase Data Analytics is a proof of concept application for demonstrating the 
 <img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_items.jpg" width=400></a>
 <a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_purchases.jpg">
 <img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_purchases.jpg" width=400></a>
+<a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto1.jpg">
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto1.jpg" width=200></a>
+<a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto2a.jpg">
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto2a.jpg" width=200></a>
+<a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto2b.jpg">
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto2b.jpg" width=200></a>
+<a target="_blank" href="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto3.jpg">
+<img src="https://gitlab.com/petterip/purchase-data/raw/master/dev-resources/screenshot_proto3.jpg" width=200></a>
 
 ## Prerequisites
 
