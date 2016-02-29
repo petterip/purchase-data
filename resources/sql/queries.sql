@@ -148,7 +148,7 @@ JOIN
 (SELECT category, CASE WHEN weight > 0 THEN avg(fiber * weight / 100) ELSE avg(fiber * 350 / 100) END AS fiber FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i4
 ON i4.category = p.category
 JOIN
-(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * ELSE avg(fat_saturated * 350 / 100) END AS weight / 100) fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
+(SELECT category, CASE WHEN weight > 0 THEN avg(fat_saturated * weight / 100) ELSE avg(fat_saturated * 350 / 100) END AS fat_saturated FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i5
 ON i5.category = p.category
 JOIN
 (SELECT category, CASE WHEN weight > 0 THEN avg(prot * weight / 100) ELSE avg(prot * 350 / 100) END AS prot FROM items WHERE food=1 AND (email LIKE :email OR email="generic") GROUP BY category) i6

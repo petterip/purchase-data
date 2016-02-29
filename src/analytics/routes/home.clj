@@ -299,10 +299,10 @@
   (GET "/about" [] (about-page))
 
   ; API routes
+  (GET "/api/purchases/" request (api-get-purchases []))
   (GET "/api/purchases/:id" request (api-get-purchases request))
   (GET "/api/purchases/:id/totals" request (api-get-purchase-totals request))
   (GET "/api/purchases/:id/date/:date" request (api-get-purchases-by-date request))
-  (GET "/api/purchases/" request (api-get-purchases []))
   (GET "/api/purchases/:id/top5" request (api-get-purchase-tops request))
   (GET "/api/purchases/:id/top5-count" request (api-get-purchase-top-counts request))
 
