@@ -23,7 +23,7 @@ You will need [Leiningen][1] 2.0 or above installed.
 
 ## Demo
 
-Application demo with some sample data is available at http://ostosdata.oulu.fi:8080/items?secret=aWQ4. Feel free to play with it as much as you like.
+Application demo with some sample data is available <a target="_blank" href="http://ostosdata.oulu.fi:8080"><b>here</b></a>. Feel free to play with it as much as you like.
 
 ## Running
 
