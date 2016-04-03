@@ -863,12 +863,17 @@ Based on <svg height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="
 <script src="https://interact.oulu.fi/hFigures/hFigures/hFigures.js" type="application/javascript"></script>
 
 <script type="text/javascript">
-  var w = 1600;
+  var w = 1700;
   var className = "hGraph-container";
   var hFigureInstance = HealthFigure(groups, w, className, {
     minScale: 0.45
   }); // from data.js
   var additionalFigure = hFigureInstance.plotAt(0);
+
+//setTimeout(function(){ $(".hGraph-container svg .hFigure-wrapper").attr("transform", "translate(400,600)scale(0.45)"); }, 3000);
+//$(".hGraph-container svg .hFigure-wrapper").attr("transform", "translate(800,500)scale(0.45)");
+//$(".hGraph-container svg").attr("transform", "translate(500,0)");
+
 </script>
 
 <script type="text/javascript">
