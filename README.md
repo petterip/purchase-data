@@ -4,7 +4,7 @@ Purchase Data Analytics is a proof of concept application for demonstrating the 
 informants to import purchase data made available to customers by S Group, and grocery shopping receipts. The receipts complete otherwise 
 sparse purchase data with nutritional details. Lastly, the data is visualized for the informant to evaluate its usefulness and meaningfulness.
 
-Visualizations make use of <a target="_blank" href="https://www.amcharts.com/">AmCharts</a> and <a href="https://gitlab.com/ledancs/hFigures">hFigures</a>.
+Visualizations make use of <a target="_blank" href="https://www.amcharts.com/">AmCharts</a> and <a href="https://github.com/ledancs/hFigures">hFigures</a>.
 The implementation uses SQLite database for simplicity and Clojure <a target="_blank" href="http://www.luminusweb.net/">Luminus framework</a> to 
 minimize the custom code base.
 <br/><br/>
@@ -56,7 +56,6 @@ The application serves the following API calls (each call is provided with an ex
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/date/2015-01-11">/api/purchases/&lt;id&gt;/date/&lt;date&gt;</a> <br/>get the purchases of specific date (date in format YYYY-MM-DD).
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/top5">/api/purchases/&lt;id&gt;/top5</a> <br/>get the top purchases of a single user (sorted by costs).
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/purchases/id0@ostosdata.oulu.fi/top5-count">/api/purchases/&lt;id&gt;/top5-count</a> <br/>get the top purchases of a single user (sorted by amounts).
-
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi">/api/nutrition/&lt;id&gt;</a> <br/>get the nutrients from a particular user's purchases.
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/month">/api/nutrition/&lt;id&gt;/month</a> <br/>get the nutrients from a particular user's purchases, grouped by months.
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/week">/api/nutrition/&lt;id&gt;/week</a> <br/>get the nutrients from a particular user's purchases, grouped by weeks.
@@ -65,7 +64,7 @@ The application serves the following API calls (each call is provided with an ex
 * GET <a target="_blank" href="http://ostosdata.oulu.fi:8080/api/nutrition/id0@ostosdata.oulu.fi/total">/api/nutrition/&lt;id&gt;/total</a> <br/>get a summary from a particular user's purchases including all the purchases.
 
 <br/>
-Note: the repository does not contain file 'all_prods.json' which is necessary for recognizing receipts. Please [contact the author](mailto:petteri.ponsimaa@oulu.fi) for instructions how to get it.
+Note: the repository does not contain file 'all_prods.json' which is necessary for recognizing receipts. Please [contact the author](mailto:petteri.ponsimaa@gmail.com) for instructions how to get it.
 
 ## License
 
